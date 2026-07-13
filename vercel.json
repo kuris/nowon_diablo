@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/nowon_dad_chase_rpg_v3.html" }
+  ]
+}
