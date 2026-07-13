@@ -1678,7 +1678,7 @@ window.addEventListener('message', function(ev) {
     let floorZ = 0;
     const underBuilding = getBuildingUnder(player.gx, player.gy);
     if(underBuilding) {
-      const height = underBuilding.a ? (underBuilding.a * 0.95) : (LANDMARKS[underBuilding.n] ? 3.8 : 2.2);
+      const height = underBuilding.a ? (underBuilding.a * 2.8) : (LANDMARKS[underBuilding.n] ? 11.0 : 6.0);
       floorZ = height;
     }
 
@@ -1689,8 +1689,8 @@ window.addEventListener('message', function(ev) {
       player.gz += player.vz * dt;
       
       // Clamp flight height
-      if(player.gz > 12.0){
-        player.gz = 12.0;
+      if(player.gz > 32.0){
+        player.gz = 32.0;
         player.vz = Math.min(0, player.vz); // halt upward velocity
       }
       
@@ -2012,7 +2012,7 @@ window.addEventListener('message', function(ev) {
         const sambu = namedBuildings.find(b=>b.n==='삼부프라자');
         if (sambu) {
           const onRoof = pointInPoly(player.gx, player.gy, sambu.p);
-          if (onRoof && player.gz > 3.0 && Math.abs(player.vz) < 0.1) {
+          if (onRoof && player.gz > 9.5 && Math.abs(player.vz) < 0.1) {
             q10.progress = 1;
             updateQuestUI();
             completeQuest(10);
@@ -2024,7 +2024,7 @@ window.addEventListener('message', function(ev) {
       // Q11 (전경 사진 촬영)
       const q11 = state.quests.find(q=>q.id===11);
       if(q11 && !q11.completed) {
-        if (player.gz > 7.0 && Math.hypot(player.gx - 20, player.gy - 20) < 5.0) {
+        if (player.gz > 18.0 && Math.hypot(player.gx - 20, player.gy - 20) < 5.0) {
           triggerFlash();
           q11.progress = 1;
           updateQuestUI();
@@ -2523,7 +2523,7 @@ window.addEventListener('message', function(ev) {
     const isApartment = b.a > 5.0; // dynamic mapping: buildings with levels > 5 are apartments
     
     // Scale building heights realistically from OSM level parameter `a`
-    const height = b.a ? (b.a * 0.95) : (isNamed ? 3.8 : 2.2);
+    const height = b.a ? (b.a * 2.8) : (isNamed ? 11.0 : 6.0);
  
     const extrudeSettings = {
       steps: 1,
@@ -2803,6 +2803,7 @@ window.addEventListener('message', function(ev) {
     jetpack.add(flamesGroup);
 
     group.userData = { head, body, larm, rarm, lleg, rleg, flames: flamesGroup };
+    group.scale.set(0.6, 0.6, 0.6);
     scene.add(group);
     return group;
   }
@@ -3172,11 +3173,11 @@ window.addEventListener('message', function(ev) {
       const dirY = player.dirY || -1;
       
       desiredCamX = targetCamX;
-      desiredCamY = player.gz + 1.5; // Naver Roadview camera height (eye-level)
+      desiredCamY = player.gz + 0.9; // Proportional eye-level height for scaled down characters (0.6 scale)
       desiredCamZ = targetCamZ;
       
       camTargetX = targetCamX + dirX * 3.0;
-      camTargetY = player.gz + 1.5;
+      camTargetY = player.gz + 0.9;
       camTargetZ = targetCamZ + dirY * 3.0;
     } else if (camMode === 3) { // 탑다운 뷰 (Birds-eye)
       desiredCamX = targetCamX;
