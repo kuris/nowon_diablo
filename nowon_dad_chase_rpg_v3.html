@@ -412,38 +412,52 @@ window.addEventListener('message', function(ev) {
     #vpad { display: block; }
   }
 
-  /* 왼쪽 조이스틱 영역 */
-  #vpad-dpad {
+  /* 왼쪽 아날로그 조이스틱 */
+  #vpad-joystick {
     position: absolute;
-    bottom: 24px;
-    left: 20px;
-    display: grid;
-    grid-template-columns: repeat(3, 58px);
-    grid-template-rows: repeat(3, 58px);
-    gap: 5px;
+    bottom: 30px;
+    left: 30px;
+    width: 130px;
+    height: 130px;
     pointer-events: auto;
+    touch-action: none;
   }
-  #vpad-dpad button {
-    width: 58px; height: 58px;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: 1.5px solid rgba(255,255,255,0.25);
-    border-radius: 14px;
-    color: #fff;
-    font-size: 22px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    user-select: none;
-    touch-action: manipulation;
-    transition: background 0.1s;
-    -webkit-tap-highlight-color: transparent;
+  #joystick-base {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid rgba(255,255,255,0.2);
+    box-shadow: 0 0 20px rgba(0,0,0,0.4), inset 0 0 30px rgba(255,255,255,0.04);
   }
-  #vpad-dpad button:active,
-  #vpad-dpad button.pressed {
-    background: rgba(255,255,255,0.25);
+  /* 방향 가이드 십자선 */
+  #joystick-base::before, #joystick-base::after {
+    content:'';
+    position:absolute;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
   }
-  #vpad-dpad .vpad-empty { visibility:hidden; pointer-events:none; }
+  #joystick-base::before { width:2px; height:100%; left:50%; top:0; transform:translateX(-50%); }
+  #joystick-base::after  { width:100%; height:2px; top:50%; left:0; transform:translateY(-50%); }
+  #joystick-knob {
+    position: absolute;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), rgba(200,220,255,0.7));
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.8);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s;
+    pointer-events: none;
+  }
+  #joystick-knob.active {
+    background: radial-gradient(circle at 35% 35%, rgba(120,180,255,1), rgba(60,120,255,0.9));
+    box-shadow: 0 4px 16px rgba(60,120,255,0.6), inset 0 1px 0 rgba(255,255,255,0.6);
+  }
 
   /* 오른쪽 액션 버튼 */
   #vpad-actions {
@@ -570,17 +584,10 @@ window.addEventListener('message', function(ev) {
 
 <!-- 모바일 플로팅 가상 패드 -->
 <div id="vpad">
-  <!-- 왼쪽: 방향 패드 -->
-  <div id="vpad-dpad">
-    <div class="vpad-empty"></div>
-    <button id="vpad-up">▲</button>
-    <div class="vpad-empty"></div>
-    <button id="vpad-left">◀</button>
-    <button id="vpad-dash">⚡<span class="vpad-lbl">달리기</span></button>
-    <button id="vpad-right">▶</button>
-    <div class="vpad-empty"></div>
-    <button id="vpad-down">▼</button>
-    <div class="vpad-empty"></div>
+  <!-- 왼쪽: 아날로그 조이스틱 -->
+  <div id="vpad-joystick">
+    <div id="joystick-base"></div>
+    <div id="joystick-knob"></div>
   </div>
   <!-- 오른쪽: 액션 버튼 -->
   <div id="vpad-actions">
@@ -991,34 +998,111 @@ window.addEventListener('message', function(ev) {
     btn.addEventListener('mouseleave',off);
   });
 
-  // ========== MOBILE VIRTUAL PAD ==========
+  // ========== MOBILE VIRTUAL PAD (아날로그 조이스틱) ==========
   (function setupVpad(){
-    // 방향 버튼 → keys 매핑
-    const dirMap = {
-      'vpad-up':    'w',
-      'vpad-down':  's',
-      'vpad-left':  'a',
-      'vpad-right': 'd',
-      'vpad-dash':  'shift',
-      'vpad-jump':  ' ',
-      'vpad-jetpack': 'z',
-    };
-    Object.entries(dirMap).forEach(([id, logical]) => {
+    const joystickEl = document.getElementById('vpad-joystick');
+    const knobEl     = document.getElementById('joystick-knob');
+    if (!joystickEl || !knobEl) return;
+
+    const RADIUS   = 65;  // 조이스틱 베이스 반지름 (px)
+    const DEADZONE = 0.18; // 중앙 데드존 비율
+    let activeTouchId = null;
+    let baseX = 0, baseY = 0;
+
+    function getJoystickCenter() {
+      const r = joystickEl.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    }
+
+    function applyVector(nx, ny) {
+      // nx, ny: [-1, 1] 범위의 정규화된 방향 벡터
+      const absX = Math.abs(nx), absY = Math.abs(ny);
+      keys['w'] = ny < -DEADZONE;
+      keys['s'] = ny >  DEADZONE;
+      keys['a'] = nx < -DEADZONE;
+      keys['d'] = nx >  DEADZONE;
+      // 대각선 달리기: 조이스틱을 80% 이상 밀면 자동 달리기
+      const magnitude = Math.hypot(nx, ny);
+      keys['shift'] = magnitude > 0.80;
+    }
+
+    function onStart(cx, cy, touchId) {
+      activeTouchId = touchId;
+      const c = getJoystickCenter();
+      baseX = c.x; baseY = c.y;
+      knobEl.classList.add('active');
+      onMove(cx, cy);
+    }
+
+    function onMove(cx, cy) {
+      let dx = cx - baseX, dy = cy - baseY;
+      const dist = Math.hypot(dx, dy);
+      // 반지름 내로 클램프
+      if (dist > RADIUS) {
+        dx = dx / dist * RADIUS;
+        dy = dy / dist * RADIUS;
+      }
+      // 놉 위치 업데이트
+      const kx = 65 + dx, ky = 65 + dy;
+      knobEl.style.left = kx + 'px';
+      knobEl.style.top  = ky + 'px';
+      knobEl.style.transform = 'translate(-50%, -50%)';
+      // 방향 입력 적용
+      applyVector(dx / RADIUS, dy / RADIUS);
+    }
+
+    function onEnd() {
+      activeTouchId = null;
+      knobEl.classList.remove('active');
+      // 놉 중앙으로 복귀
+      knobEl.style.left = '50%';
+      knobEl.style.top  = '50%';
+      knobEl.style.transform = 'translate(-50%, -50%)';
+      // 모든 이동 키 해제 (shift 제외, 액션 버튼으로 따로 처리)
+      keys['w'] = keys['s'] = keys['a'] = keys['d'] = keys['shift'] = false;
+    }
+
+    // 터치 이벤트
+    joystickEl.addEventListener('touchstart', e => {
+      e.preventDefault();
+      const t = e.changedTouches[0];
+      onStart(t.clientX, t.clientY, t.identifier);
+    }, { passive: false });
+
+    joystickEl.addEventListener('touchmove', e => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        if (t.identifier === activeTouchId) { onMove(t.clientX, t.clientY); break; }
+      }
+    }, { passive: false });
+
+    joystickEl.addEventListener('touchend',    e => { e.preventDefault(); onEnd(); }, { passive: false });
+    joystickEl.addEventListener('touchcancel', e => { e.preventDefault(); onEnd(); }, { passive: false });
+
+    // 마우스 지원 (데스크탑 테스트용)
+    joystickEl.addEventListener('mousedown', e => { onStart(e.clientX, e.clientY, 'mouse'); });
+    window.addEventListener('mousemove',     e => { if (activeTouchId === 'mouse') onMove(e.clientX, e.clientY); });
+    window.addEventListener('mouseup',       ()  => { if (activeTouchId === 'mouse') onEnd(); });
+
+    // 오른쪽 액션 버튼 (점프/제트팩)
+    const actionMap = { 'vpad-jump': ' ', 'vpad-jetpack': 'z' };
+    Object.entries(actionMap).forEach(([id, logical]) => {
       const btn = document.getElementById(id);
       if (!btn) return;
       const on  = e => { e.preventDefault(); keys[logical] = true;  btn.classList.add('pressed'); };
       const off = e => { e.preventDefault(); keys[logical] = false; btn.classList.remove('pressed'); };
-      btn.addEventListener('touchstart', on,  { passive: false });
-      btn.addEventListener('touchend',   off, { passive: false });
-      btn.addEventListener('touchcancel',off, { passive: false });
-      btn.addEventListener('mousedown',  on);
-      btn.addEventListener('mouseup',    off);
-      btn.addEventListener('mouseleave', off);
+      btn.addEventListener('touchstart',  on,  { passive: false });
+      btn.addEventListener('touchend',    off, { passive: false });
+      btn.addEventListener('touchcancel', off, { passive: false });
+      btn.addEventListener('mousedown', on);
+      btn.addEventListener('mouseup',   off);
+      btn.addEventListener('mouseleave',off);
     });
-    // 전체화면 & 소리 버튼
-    const fsBtn = document.getElementById('vpad-fs');
-    if (fsBtn) fsBtn.addEventListener('click', () => { initAudio(); toggleFullscreen(); });
+
+    // 전체화면 & 소리
+    const fsBtn    = document.getElementById('vpad-fs');
     const soundBtn = document.getElementById('vpad-sound');
+    if (fsBtn)    fsBtn.addEventListener('click',    () => { initAudio(); toggleFullscreen(); });
     if (soundBtn) soundBtn.addEventListener('click', () => { initAudio(); toggleSound(); });
   })();
 
