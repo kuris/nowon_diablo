@@ -2827,6 +2827,7 @@ window.addEventListener('message', function(ev) {
 
   function sync3D(dt){
     if(!scene) return;
+    const camMode = state.cameraMode || 0;
 
     // ── 아들 방향 화살표 업데이트 ──
     (function updateSonArrow(){
@@ -3154,8 +3155,6 @@ window.addEventListener('message', function(ev) {
     let camTargetZ = targetCamZ;
     
     let desiredCamX, desiredCamY, desiredCamZ;
-    
-    const camMode = state.cameraMode || 0;
     
     if (camMode === 1) { // 3인칭 백뷰 (TPS Follow)
       const dirX = player.dirX || 0;
