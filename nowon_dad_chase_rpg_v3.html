@@ -394,6 +394,7 @@ window.addEventListener('message', function(ev) {
       flex: 1 1 auto;
       height: auto !important;
       min-height: 0;
+      aspect-ratio: auto !important; /* Remove fixed desktop aspect-ratio */
     }
     #controls { display:none !important; }
     /* 미니맵 위치 조정 */
@@ -1672,6 +1673,7 @@ window.addEventListener('message', function(ev) {
     scene.add(ground);
  
     build3DMap();
+    onResize();
   }
  
   function createCrosswalk(cx, cz, angle) {
