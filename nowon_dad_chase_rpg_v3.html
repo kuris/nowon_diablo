@@ -650,6 +650,7 @@ window.addEventListener('message', function(ev) {
     <div class="bar"><span id="quests-bar" style="width:0%;background:var(--color-warning);"></span></div>
   </div>
   <div class="hud-buttons">
+    <button class="icon-btn" id="btn-camera" title="시점 변경 (V)" style="display: none; font-size: 15px;">🎥</button>
     <button class="icon-btn" id="btn-quests" title="퀘스트 목록" style="font-size:15px;">📋</button>
     <button class="icon-btn active" id="btn-sound" title="사운드 ON/OFF">🔊</button>
     <button class="icon-btn active" id="btn-music" title="배경음악 ON/OFF">🎵</button>
@@ -1206,7 +1207,7 @@ window.addEventListener('message', function(ev) {
     state.ghost = { gx: ghostPt[0], gy: ghostPt[1], investigated: false, icon: '👻' };
   }
 
-  const state={running:false,time:150,anger:0,cluesFound:0,lastKakao:0,tick:0,quests:[],stickers:[],lostItems:[],cats:[],toyRobot:null,suspiciousStudent:null,ghost:null};
+  const state={running:false,time:150,anger:0,cluesFound:0,lastKakao:0,tick:0,quests:[],stickers:[],lostItems:[],cats:[],toyRobot:null,suspiciousStudent:null,ghost:null,cameraMode:0};
 
   // ========== INPUT ==========
   // codeToKey: e.code → logical key name used throughout the game
@@ -1217,9 +1218,22 @@ window.addEventListener('message', function(ev) {
     'ArrowLeft':'arrowleft', 'ArrowRight':'arrowright',
     'ShiftLeft':'shift', 'ShiftRight':'shift',
     'Space':' ', 'KeyZ':'z', 'KeyF':'f', 'KeyM':'m',
-    'KeyQ':'q'
+    'KeyQ':'q', 'KeyV':'v'
   };
   const keys={};
+  
+  function isMobileDevice() {
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 768);
+  }
+
+  function cycleCameraMode() {
+    state.cameraMode = (state.cameraMode + 1) % 3;
+    const modeNames = ['쿼터뷰 (기본)', '3인칭 백뷰', '탑다운 뷰'];
+    showHint(`🎥 시점 변경: ${modeNames[state.cameraMode]}`);
+    if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
+    saveGame();
+  }
+
   window.addEventListener('keydown',e=>{
     const logical = CODE_MAP[e.code];
     if(logical) {
@@ -1229,6 +1243,12 @@ window.addEventListener('message', function(ev) {
         e.preventDefault();
       if(logical==='f') { e.preventDefault(); toggleFullscreen(); }
       if(logical==='m') { e.preventDefault(); toggleSound(); }
+      if(logical==='v') {
+        e.preventDefault();
+        if (!isMobileDevice()) {
+          cycleCameraMode();
+        }
+      }
       if(logical==='q') {
         e.preventDefault();
         const modal = document.getElementById('quest-modal');
@@ -1423,6 +1443,23 @@ window.addEventListener('message', function(ev) {
     });
   }
 
+  const btnCamera = document.getElementById('btn-camera');
+  if(btnCamera) {
+    btnCamera.addEventListener('click', () => {
+      initAudio();
+      cycleCameraMode();
+    });
+  }
+
+  function updatePCFeatures() {
+    const isMobile = isMobileDevice();
+    if (btnCamera) {
+      btnCamera.style.display = isMobile ? 'none' : 'inline-block';
+    }
+  }
+
+  window.addEventListener('load', updatePCFeatures);
+
   function onResize() {
     if (!renderer || !camera || !canvas3d) return;
     const holder = document.getElementById('canvas-holder');
@@ -1432,6 +1469,7 @@ window.addEventListener('message', function(ev) {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
+    updatePCFeatures();
   }
   window.addEventListener('resize', onResize);
 
@@ -3078,14 +3116,55 @@ window.addEventListener('message', function(ev) {
     const targetCamX = player.gx - 20;
     const targetCamZ = player.gy - 20;
     
-    const camOffsetY = 13.0;
-    const camOffsetZ = 10.0;
+    let camTargetX = targetCamX;
+    let camTargetY = player.gz;
+    let camTargetZ = targetCamZ;
     
-    camera.position.x += (targetCamX - camera.position.x) * 0.08;
-    camera.position.y += (player.gz + camOffsetY - camera.position.y) * 0.08;
-    camera.position.z += (targetCamZ + camOffsetZ - camera.position.z) * 0.08;
+    let desiredCamX, desiredCamY, desiredCamZ;
+    
+    const camMode = state.cameraMode || 0;
+    
+    if (camMode === 1) { // 3인칭 백뷰 (TPS Follow)
+      const dirX = player.dirX || 0;
+      const dirY = player.dirY || -1;
+      
+      desiredCamX = targetCamX - dirX * 3.8;
+      desiredCamY = player.gz + 1.8;
+      desiredCamZ = targetCamZ - dirY * 3.8;
+      
+      camTargetX = targetCamX + dirX * 2.0;
+      camTargetY = player.gz + 0.7;
+      camTargetZ = targetCamZ + dirY * 2.0;
+    } else if (camMode === 2) { // 탑다운 뷰 (Birds-eye)
+      desiredCamX = targetCamX;
+      desiredCamY = player.gz + 16.0;
+      desiredCamZ = targetCamZ + 0.001;
+      
+      camTargetX = targetCamX;
+      camTargetY = player.gz;
+      camTargetZ = targetCamZ;
+    } else { // 0: 쿼터뷰 (기본)
+      desiredCamX = targetCamX;
+      desiredCamY = player.gz + 13.0;
+      desiredCamZ = targetCamZ + 10.0;
+      
+      camTargetX = targetCamX;
+      camTargetY = player.gz;
+      camTargetZ = targetCamZ - 0.5;
+    }
+    
+    camera.position.x += (desiredCamX - camera.position.x) * 0.08;
+    camera.position.y += (desiredCamY - camera.position.y) * 0.08;
+    camera.position.z += (desiredCamZ - camera.position.z) * 0.08;
 
-    camera.lookAt(targetCamX, player.gz, targetCamZ - 0.5);
+    if (!camera.currentTarget) {
+      camera.currentTarget = new THREE.Vector3(camTargetX, camTargetY, camTargetZ);
+    } else {
+      camera.currentTarget.x += (camTargetX - camera.currentTarget.x) * 0.1;
+      camera.currentTarget.y += (camTargetY - camera.currentTarget.y) * 0.1;
+      camera.currentTarget.z += (camTargetZ - camera.currentTarget.z) * 0.1;
+    }
+    camera.lookAt(camera.currentTarget);
 
     if (!player.light && scene) {
       player.light = new THREE.PointLight(0xffeaad, 1.25, 8.0);
@@ -3247,7 +3326,8 @@ window.addEventListener('message', function(ev) {
         cats: state.cats,
         toyRobot: state.toyRobot,
         suspiciousStudent: state.suspiciousStudent,
-        ghost: state.ghost
+        ghost: state.ghost,
+        cameraMode: state.cameraMode || 0
       },
       player: {
         gx: player.gx,
@@ -3334,6 +3414,7 @@ window.addEventListener('message', function(ev) {
       state.toyRobot = saveData.state.toyRobot;
       state.suspiciousStudent = saveData.state.suspiciousStudent;
       state.ghost = saveData.state.ghost;
+      state.cameraMode = saveData.state.cameraMode || 0;
       
       // Restore entities
       player = saveData.player;
@@ -3395,6 +3476,7 @@ window.addEventListener('message', function(ev) {
     
     state.running=true;
     state.time=0; state.anger=0; state.cluesFound=0; state.tick=0; state.lastKakao=0;
+    state.cameraMode=0;
     melodyStep=0; bassStep=0; musicTimer=0;
     camX=player.gx;camY=player.gy;
     
