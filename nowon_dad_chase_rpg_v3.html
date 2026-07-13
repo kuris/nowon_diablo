@@ -704,7 +704,7 @@ window.addEventListener('message', function(ev) {
     };
     const ijin=namedBuildings.find(b=>b.n==='I JIN Building');
     const sstart=ijin?findRoadNear(ijin.cx+1,ijin.cy):[25,22];
-    son={gx:sstart[0],gy:sstart[1],speed:0.042,hidden:false,hideTimer:0,tgt:null};
+    son={gx:sstart[0],gy:sstart[1],speed:0.042,hidden:false,hideTimer:0,tgt:null,tiredMult:1.0};
     const acadA=namedBuildings.find(b=>b.n==='삼부프라자');
     const acadB=namedBuildings.find(b=>b.n==='건영상가');
     teachers=[];
@@ -968,8 +968,10 @@ window.addEventListener('message', function(ev) {
       player.dirY = dy / len;
     }
 
-    const dashing=keys['shift']&&player.mp>0;
-    const spd=player.speed*(dashing?1.9:1);
+    if(player._slowTimer>0) player._slowTimer=Math.max(0,player._slowTimer-dt);
+    const slowPenalty = player._slowTimer>0 ? 0.45 : 1.0;
+    const dashing=keys['shift']&&player.mp>0&&player._slowTimer<=0;
+    const spd=player.speed*(dashing?1.9:1)*slowPenalty;
     if(dashing)player.mp=Math.max(0,player.mp-0.15);
     else player.mp=Math.min(100,player.mp+0.04);
 
@@ -999,19 +1001,24 @@ window.addEventListener('message', function(ev) {
     camY+=(player.gy-camY)*0.08;
 
     const distSon=Math.hypot(player.gx-son.gx,player.gy-son.gy);
+
+    // 단서 수에 따라 아들이 지쳐서 느려짐: 0=100%, 1=80%, 2=55%, 3=30%
+    const tiredTargets=[1.0,0.8,0.55,0.30];
+    son.tiredMult += ((tiredTargets[state.cluesFound]||0.30) - son.tiredMult) * 0.01;
+
     if(son.hidden){
       son.hideTimer-=dt;
       if(son.hideTimer<=0)son.hidden=false;
-    } else if(distSon<5){
+    } else if(distSon<6){
       const fx=son.gx-player.gx,fy=son.gy-player.gy;
       const fl=Math.hypot(fx,fy)||1;
-      tryMove(son,(fx/fl)*son.speed*1.35,(fy/fl)*son.speed*1.35);
+      tryMove(son,(fx/fl)*son.speed*1.2*son.tiredMult,(fy/fl)*son.speed*1.2*son.tiredMult);
     } else {
       if(!son.tgt||Math.hypot(son.tgt[0]-son.gx,son.tgt[1]-son.gy)<0.6){
         son.tgt=roadPoints[Math.floor(Math.random()*roadPoints.length)];
-        if(Math.random()<0.2){
+        if(Math.random()<0.07&&state.cluesFound===0){
           son.hidden=true;
-          son.hideTimer=2.5;
+          son.hideTimer=2.0;
           const lm=namedBuildings[Math.floor(Math.random()*namedBuildings.length)];
           const r=findRoadNear(lm.cx+0.5,lm.cy+0.5);
           son.gx=r[0];son.gy=r[1];
@@ -1019,11 +1026,11 @@ window.addEventListener('message', function(ev) {
       }
       const tx=son.tgt[0]-son.gx,ty=son.tgt[1]-son.gy;
       const tl=Math.hypot(tx,ty)||1;
-      tryMove(son,(tx/tl)*son.speed*0.6,(ty/tl)*son.speed*0.6);
+      tryMove(son,(tx/tl)*son.speed*0.6*son.tiredMult,(ty/tl)*son.speed*0.6*son.tiredMult);
     }
 
-    if(!son.hidden&&distSon<0.7){
-      endGame(true,'🎉 아들을 찾았습니다! 안전하게 귀가시키고 오늘 하루를 훈훈하게 마무리해 보세요.');
+    if(!son.hidden&&distSon<0.8){
+      triggerCatchCutscene();
       return;
     }
 
@@ -1040,8 +1047,14 @@ window.addEventListener('message', function(ev) {
       if(d<0.85&&!t._hit&&player.gz<0.8){
         t._hit=true;
         SFX.talk();
-        showHint('📚 학원 선생님: "안녕하세요 아버님! 날씨가 아주 선선하고 좋네요."');
-        setTimeout(()=>{t._hit=false;},3000);
+        player._slowTimer=3.0; // 3초 감속 패널티
+        const msgs=[
+          '📚 학원 선생님: "아버님! 저희 학원 특별 설명회가 오늘인데 잠깐만요!"',
+          '📚 학원 선생님: "아버님 성적 걱정되시죠? 3분만 시간 내주세요!"',
+          '📚 학원 선생님: "이번 달 등록하시면 교재비 무료예요, 아버님!"'
+        ];
+        showHint(msgs[Math.floor(Math.random()*msgs.length)]);
+        setTimeout(()=>{t._hit=false;},4000);
       }
     });
 
@@ -1051,7 +1064,12 @@ window.addEventListener('message', function(ev) {
         c.taken=true;
         state.cluesFound++;
         SFX.clue();
-        showHint(`🔍 흔적 발견: ${c.text} — 미니맵에 아들 위치 표시!`);
+        const clueFollowup=[
+          '단서 1개! 아들이 지치기 시작합니다... 미니맵 확인! 🗺️',
+          '단서 2개! 아들이 많이 지쳤어요. 이제 따라잡을 수 있어요! 🏃',
+          '단서 3개 완성! 아들이 거의 멈췄습니다. 지금 잡으세요!! 🎯'
+        ];
+        showHint(`🔍 흔적: ${c.text} — ${clueFollowup[state.cluesFound-1]}`);
         showKakao(`아들의 흔적 발견! (${state.cluesFound}/3)`);
       }
     });
@@ -2115,7 +2133,58 @@ window.addEventListener('message', function(ev) {
     setTimeout(()=>showHint('💡 팁: 동네 구석구석을 돌며 단서(📝🥤🎒) 3개를 주워보세요!'), 1500);
   };
 
+  // ===== 아들 잡기 컷씬 (대화형 엔딩) =====
+  function triggerCatchCutscene(){
+    state.running=false;
+    SFX.catch();
+    const ov=document.getElementById('overlay');
+    const dialogues=[
+      {spk:'아빠 👨', msg:'야! 거기 서! 이 녀석, 드디어 잡았다!'},
+      {spk:'아들 🧒', msg:'...아빠? 어떻게 여기까지...'},
+      {spk:'아빠 👨', msg:'PC방이 어딘지 아빠가 다 알고 있었어. 밥은 먹었어?'},
+      {spk:'아들 🧒', msg:'...배고파요. 미안해요 아빠.'},
+      {spk:'아빠 👨', msg:'(한숨) 가자. 집에서 라면 끓여줄게. 공부 얘긴 내일 하자.'},
+    ];
+    let step=0;
+    const timeSec=Math.round(state.time);
+    const rating=state.cluesFound>=3?'S':state.cluesFound>=2?'A':state.cluesFound>=1?'B':'C';
+    const starsMap={'S':'⭐⭐⭐','A':'⭐⭐','B':'⭐','C':'✊'};
+    const gradeMsg={'S':'단서를 모두 모아 완벽한 추적!','A':'빠른 추적으로 아들 발견!','B':'어렵게 잡았지만 성공!','C':'맨몸으로 잡아냈습니다!'};
+
+    function showDialogue(){
+      const d=dialogues[step];
+      const isLast=step===dialogues.length-1;
+      const dots=[...Array(dialogues.length)].map((_,i)=>
+        `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;
+          background:${i===step?'#fff':'rgba(255,255,255,0.3)'};margin:0 3px"></span>`
+      ).join('');
+      ov.innerHTML=`<div class="box" style="max-width:430px;text-align:left">
+        <h2 style="text-align:center;margin-bottom:4px">💬 은행사거리 재회</h2>
+        <p style="text-align:center;font-size:12px;opacity:0.6;margin:0 0 14px">노원구 중계동 학원가</p>
+        <div style="background:rgba(255,255,255,0.08);border-radius:14px;padding:18px 22px;min-height:80px;border:1px solid rgba(255,255,255,0.12)">
+          <div style="font-size:11px;opacity:0.55;margin-bottom:8px;letter-spacing:0.5px">${d.spk}</div>
+          <div style="font-size:15px;line-height:1.65">"${d.msg}"</div>
+        </div>
+        <div style="text-align:center;margin:10px 0">${dots}</div>
+        ${isLast?`
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.15);margin:14px 0">
+          <div style="text-align:center">
+            <div style="font-size:28px;margin-bottom:6px">${starsMap[rating]}</div>
+            <div style="font-size:18px;font-weight:700;margin-bottom:4px">등급 ${rating} — ${gradeMsg[rating]}</div>
+            <div style="font-size:12px;opacity:0.65">단서 ${state.cluesFound}/3 · 소요시간 ${formatTime(timeSec)}</div>
+          </div>
+          <button class="primary" style="width:100%;margin-top:14px" onclick="startGame()">다시 찾아가기 🔄</button>
+        `:`<button class="primary" style="width:100%;margin-top:4px" id="dlg-next">다음 ▶</button>`}
+        <div class="attr" style="margin-top:10px">Map data © OpenStreetMap contributors (ODbL)</div>
+      </div>`;
+      ov.style.display='flex';
+      if(!isLast) document.getElementById('dlg-next').onclick=()=>{step++;showDialogue();};
+    }
+    showDialogue();
+  }
+
   function endGame(win,msg){
+
     state.running=false;
     if(win) SFX.catch(); else SFX.gameover();
     const ov=document.getElementById('overlay');
