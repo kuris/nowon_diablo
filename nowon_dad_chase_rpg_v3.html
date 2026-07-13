@@ -371,6 +371,118 @@ window.addEventListener('message', function(ev) {
     animation: arrow-appear 0.5s ease-out forwards,
                arrow-pulse 0.65s 0.5s ease-in-out infinite alternate;
   }
+  
+  /* ── 퀘스트 로그 모달 ── */
+  #quest-modal {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 8, 20, 0.88);
+    color: #fff;
+    padding: 20px;
+    z-index: 20;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  #quest-modal .box {
+    width: 100%;
+    max-width: 480px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90%;
+  }
+  #quest-modal h2 { margin: 0 0 4px; font-size: 20px; text-align: center; }
+  #quest-modal .subtitle { text-align: center; font-size: 11px; opacity: 0.6; margin-bottom: 12px; }
+  #quest-list {
+    overflow-y: auto;
+    flex: 1;
+    margin-bottom: 12px;
+    padding-right: 4px;
+  }
+  .quest-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .quest-item.completed {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.06);
+    opacity: 0.85;
+  }
+  .quest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .quest-category {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1.5px 5px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .qc-daily { background: rgba(59, 130, 246, 0.25); color: #93c5fd; border: 0.5px solid rgba(59, 130, 246, 0.5); }
+  .qc-explore { background: rgba(16, 185, 129, 0.25); color: #6ee7b7; border: 0.5px solid rgba(16, 185, 129, 0.5); }
+  .qc-story { background: rgba(139, 92, 246, 0.25); color: #c4b5fd; border: 0.5px solid rgba(139, 92, 246, 0.5); }
+  .qc-special { background: rgba(245, 158, 11, 0.25); color: #fde047; border: 0.5px solid rgba(245, 158, 11, 0.5); }
+  
+  .quest-desc { font-size: 11px; color: rgba(255, 255, 255, 0.7); }
+  .quest-bar-wrap { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .quest-bar { flex: 1; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; }
+  .quest-bar-fill { height: 100%; width: 0; background: var(--color-brand-secondary); transition: width 0.3s ease; }
+  .quest-item.completed .quest-bar-fill { background: var(--color-success); }
+  .quest-progress-txt { font-size: 10px; font-weight: 700; opacity: 0.8; white-space: nowrap; }
+
+  #quest-close-btn { width: 100%; background: #ff5577; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; min-height: 40px; }
+  #quest-close-btn:hover { background: #ff3355; }
+
+  /* ── 퀘스트 완료 알림 ── */
+  #quest-banner {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(16, 185, 129, 0.95);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    z-index: 30;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    pointer-events: none;
+    transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #quest-banner.show { top: 12px; }
+
+  /* ── 카메라 플래시 효과 ── */
+  #camera-flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 99;
+    transition: opacity 0.4s ease-out;
+  }
+
   #fs-controls { position:absolute; top:12px; left:12px; z-index:7; display:flex; gap:6px; }
   #controls { display:flex; gap:8px; padding:12px; background:var(--color-bg-surface); border:1px solid var(--color-border-subtle); border-top:none; border-radius:0 0 8px 8px; flex-wrap:wrap; justify-content:space-between; align-items:center; }
   #controls .info { font-size:12px; color:var(--color-text-secondary); flex:1; min-width:200px; }
@@ -399,6 +511,15 @@ window.addEventListener('message', function(ev) {
     #controls { display:none !important; }
     /* 미니맵 위치 조정 */
     #minimap { top:8px !important; right:8px !important; width:90px !important; height:90px !important; }
+    
+    #hud {
+      grid-template-columns: repeat(4, 1fr) auto !important;
+      font-size: 11px !important;
+      padding: 6px !important;
+    }
+    .hud-value { font-size: 12px !important; }
+    .hud-label { font-size: 9px !important; }
+    .bar { height: 6px !important; }
   }
 
   /* ── 플로팅 가상 버튼 오버레이 (모바일 전용) ── */
@@ -509,7 +630,7 @@ window.addEventListener('message', function(ev) {
 
 <div id="hud">
   <div class="hud-cell">
-    <span class="hud-label">🕒 탐색 시간</span>
+    <span class="hud-label" id="time-label">🕒 탐색 시간</span>
     <span class="hud-value" id="time-val">00:00</span>
     <div class="bar"><span id="time-bar" style="width:100%;background:var(--color-success);"></span></div>
   </div>
@@ -523,7 +644,13 @@ window.addEventListener('message', function(ev) {
     <span class="hud-value" id="zone-val">은행사거리</span>
     <div class="bar"><span id="zone-bar" style="width:100%;background:var(--color-brand-secondary);"></span></div>
   </div>
+  <div class="hud-cell">
+    <span class="hud-label">📋 완료한 퀘스트</span>
+    <span class="hud-value" id="quests-val">0 / 11</span>
+    <div class="bar"><span id="quests-bar" style="width:0%;background:var(--color-warning);"></span></div>
+  </div>
   <div class="hud-buttons">
+    <button class="icon-btn" id="btn-quests" title="퀘스트 목록" style="font-size:15px;">📋</button>
     <button class="icon-btn active" id="btn-sound" title="사운드 ON/OFF">🔊</button>
     <button class="icon-btn active" id="btn-music" title="배경음악 ON/OFF">🎵</button>
     <button class="icon-btn" id="btn-fs" title="전체화면">⛶</button>
@@ -536,6 +663,21 @@ window.addEventListener('message', function(ev) {
   <div id="kakao"><div class="name">👩 와이프</div><span id="kakao-msg"></span></div>
   <div id="hint"></div>
   <div id="building-popup"><img id="bp-img" src=""><div class="cap" id="bp-cap"></div><div class="sub" id="bp-sub"></div></div>
+  <!-- 퀘스트 로그 모달 -->
+  <div id="quest-modal">
+    <div class="box">
+      <h2>📋 은행사거리 퀘스트 목록</h2>
+      <div class="subtitle">시간대와 구역에 맞춰 다양한 퀘스트를 완료해 보세요!</div>
+      <div id="quest-list"></div>
+      <button id="quest-close-btn">닫기</button>
+    </div>
+  </div>
+  <!-- 퀘스트 완료 팝업 배너 -->
+  <div id="quest-banner">
+    <span>🏆</span> <span id="quest-banner-text">퀘스트 완료!</span>
+  </div>
+  <!-- 카메라 플래시 효과 -->
+  <div id="camera-flash"></div>
   <!-- 아들 방향 화살표 인디케이터 -->
   <div id="son-arrow">
     <div class="arrow-wrap" id="arrow-wrap">
@@ -560,7 +702,9 @@ window.addEventListener('message', function(ev) {
         👮 <b>학원 선생님</b>: 길가에 돌아다니는 학원 선생님들은 이제 평화로운 퇴근 순찰 중입니다.<br>
         <span class="kbd">WASD / ↑↓←→</span> 이동 · <span class="kbd">Shift</span> 달리기 · <span class="kbd">Space</span> 점프 · <span class="kbd">Z</span> 제트팩 · <span class="kbd">F</span> 전체화면
       </p>
-      <button class="primary" onclick="startGame()">🚶 탐색 시작!</button>
+      <div id="start-buttons" style="margin-top:14px;display:flex;justify-content:center;gap:10px;">
+        <button class="primary" onclick="startNewGame()">🚶 탐색 시작!</button>
+      </div>
       <div class="attr">Map data © OpenStreetMap contributors (ODbL)</div>
     </div>
   </div>
@@ -756,7 +900,11 @@ window.addEventListener('message', function(ev) {
     jump: () => {
       playSweep(150, 600, 0.15, 'triangle', 0.25);
     },
-    jetpack: () => playNoise(0.04, 0.45, 1200)
+    jetpack: () => playNoise(0.04, 0.45, 1200),
+    questComplete: () => {
+      const notes = [523, 659, 784, 1047];
+      notes.forEach((n,i)=>setTimeout(()=>playTone(n, 0.12, 'sine', 0.35), i*100));
+    }
   };
 
   // ========== BACKGROUND MUSIC (8bit style, adaptive tempo) ==========
@@ -910,34 +1058,63 @@ window.addEventListener('message', function(ev) {
 
   let player, son, teachers, siblings, clues;
 
+  function getRandomRoadPoint() {
+    if(!roadPoints || roadPoints.length === 0) return [20, 20];
+    return roadPoints[Math.floor(Math.random() * roadPoints.length)];
+  }
+
+  function getBuildingUnder(gx, gy) {
+    if(!MAP || !MAP.bd) return null;
+    for(const b of MAP.bd){
+      if(pointInPoly(gx, gy, b.p)) return b;
+    }
+    return null;
+  }
+
   function resetEntities(){
     const start=findRoadNear(20,20);
     player={
       gx:start[0],gy:start[1],gz:0,vz:0,speed:0.055,mp:100,anim:0,stepTimer:0,
       dirX:0,dirY:1,attackTimer:0,attackCooldown:0
     };
+    
     const ijin=namedBuildings.find(b=>b.n==='I JIN Building');
     const sstart=ijin?findRoadNear(ijin.cx+1,ijin.cy):[25,22];
     son={gx:sstart[0],gy:sstart[1],speed:0.042,hidden:false,hideTimer:0,tgt:null,tiredMult:1.0};
+    
+    // 5명의 학원 선생님 순찰 배치 (Q1용)
     const acadA=namedBuildings.find(b=>b.n==='삼부프라자');
     const acadB=namedBuildings.find(b=>b.n==='건영상가');
+    const tutaA=namedBuildings.find(b=>b.n==='두타빌 A동');
+    const church=namedBuildings.find(b=>b.n==='서울제일교회');
+    
     teachers=[];
     if(acadA){
       const p1=findRoadNear(acadA.cx-2,acadA.cy);
       const p2=findRoadNear(acadA.cx+2,acadA.cy+1);
-      teachers.push({
-        gx:p1[0],gy:p1[1],path:[p1,p2],pIdx:0,
-        patrolSpeed:0.022,state:'patrol',stunTimer:0,kbX:0,kbY:0,kbTimer:0
-      });
+      teachers.push({ gx:p1[0],gy:p1[1],path:[p1,p2],pIdx:0,patrolSpeed:0.022,state:'patrol',stunTimer:0,kbX:0,kbY:0,kbTimer:0 });
     }
     if(acadB){
       const p1=findRoadNear(acadB.cx-1,acadB.cy-1);
       const p2=findRoadNear(acadB.cx+1,acadB.cy+2);
-      teachers.push({
-        gx:p1[0],gy:p1[1],path:[p1,p2],pIdx:0,
-        patrolSpeed:0.02,state:'patrol',stunTimer:0,kbX:0,kbY:0,kbTimer:0
-      });
+      teachers.push({ gx:p1[0],gy:p1[1],path:[p1,p2],pIdx:0,patrolSpeed:0.02,state:'patrol',stunTimer:0,kbX:0,kbY:0,kbTimer:0 });
     }
+    if(tutaA){
+      const p1=findRoadNear(tutaA.cx-1,tutaA.cy-1.5);
+      const p2=findRoadNear(tutaA.cx+1,tutaA.cy+1.5);
+      teachers.push({ gx:p1[0],gy:p1[1],path:[p1,p2],pIdx:0,patrolSpeed:0.021,state:'patrol',stunTimer:0,kbX:0,kbY:0,kbTimer:0 });
+    }
+    if(church){
+      const p1=findRoadNear(church.cx-1.5,church.cy);
+      const p2=findRoadNear(church.cx+1.5,church.cy-1);
+      teachers.push({ gx:p1[0],gy:p1[1],path:[p1,p2],pIdx:0,patrolSpeed:0.019,state:'patrol',stunTimer:0,kbX:0,kbY:0,kbTimer:0 });
+    }
+    if(ijin){
+      const p1=findRoadNear(ijin.cx-1.5,ijin.cy-1.5);
+      const p2=findRoadNear(ijin.cx+1.5,ijin.cy+1.5);
+      teachers.push({ gx:p1[0],gy:p1[1],path:[p1,p2],pIdx:0,patrolSpeed:0.023,state:'patrol',stunTimer:0,kbX:0,kbY:0,kbTimer:0 });
+    }
+    
     const shuttle=namedBuildings.find(b=>b.n==='덕암관');
     const snack=namedBuildings.find(b=>b.n==='두타빌 B동');
     siblings=[];
@@ -949,16 +1126,87 @@ window.addEventListener('message', function(ev) {
       const p=findRoadNear(snack.cx+1,snack.cy);
       siblings.push({gx:p[0],gy:p[1],name:'🧒 막내',spoken:false,msg:'형은... 서쪽? (사실 동쪽 편의점)'});
     }
+    
+    // 단서 랜덤 스폰
     clues=[];
-    const spots=[[16,25],[22,22],[27,20],[17,15],[24,17]];
     for(let i=0;i<3;i++){
-      const s=spots[i];
-      const p=findRoadNear(s[0],s[1]);
-      clues.push({gx:p[0],gy:p[1],taken:false,icon:['📝','🥤','🎒'][i],text:['뜯지 않은 영단어장','편의점 슬러시 컵','책가방 지퍼 조각'][i]});
+      const pt=getRandomRoadPoint();
+      clues.push({
+        gx:pt[0],gy:pt[1],taken:false,
+        icon:['📝','🥤','🎒'][i],
+        text:['뜯지 않은 영단어장','편의점 슬러시 컵','책가방 지퍼 조각'][i]
+      });
     }
+
+    // 퀘스트 상태 초기화 (11종)
+    state.quests = [
+      { id: 1, category: 'daily', name: '학원가 순찰', desc: '학원 선생님 5명에게 인사하기 (접촉)', progress: 0, target: 5, completed: false, met: [] },
+      { id: 2, category: 'daily', name: '추억의 장소', desc: 'PC방(I JIN), 분식집(두타빌 B), 만화방(유경빌딩) 방문', progress: 0, target: 3, completed: false, visited: { pc: false, snack: false, comic: false } },
+      { id: 3, category: 'daily', name: '맛집 탐방', desc: '떡볶이집(두타빌 B), 김밥집(아파트 상가), 카페(두타빌 A) 방문해 사진 찍기 (클릭)', progress: 0, target: 3, completed: false, photos: { snack: false, cvs: false, cafe: false } },
+      { id: 4, category: 'explore', name: '숨겨진 그래피티', desc: '골목에 숨겨진 그래피티/스티커 5개 찾기', progress: 0, target: 5, completed: false },
+      { id: 5, category: 'explore', name: '버려진 물건', desc: '동네에 떨어진 물건들(책, 이어폰, 우산 등) 5개 수집', progress: 0, target: 5, completed: false },
+      { id: 6, category: 'explore', name: '고양이 찾기', desc: '동네 길고양이 4마리 찾아 먹이 주기', progress: 0, target: 4, completed: false },
+      { id: 7, category: 'story', name: '와이프의 부탁', desc: '준서가 좋아하던 장난감 로봇(🤖) 찾기 (삼부프라자 뒤)', progress: 0, target: 1, completed: false },
+      { id: 8, category: 'story', name: '학원생 목격담', desc: '밤늦게 학원가에서 이상한 행동을 하는 학생(🧑‍🎓) 미행하기 (5초)', progress: 0, target: 5, completed: false, activeTimer: 0 },
+      { id: 9, category: 'story', name: '지역 전설', desc: '밤에 교회 뒤편에 나타나는 "은행사거리 귀신(👻)" 조사', progress: 0, target: 1, completed: false },
+      { id: 10, category: 'special', name: '제트팩 챌린지', desc: '삼부프라자 빌딩 옥상에 착륙하기', progress: 0, target: 1, completed: false },
+      { id: 11, category: 'special', name: '사진 미션', desc: '제트팩으로 공중 높이(7m 이상) 날아 은행사거리 전경 촬영하기', progress: 0, target: 1, completed: false }
+    ];
+
+    // 골목길(주택가/중소도로) 좌표 추출
+    const alleyPoints = [];
+    MAP.hw.forEach(h=>{
+      if(h.t === 'residential' || h.t === 'tertiary') {
+        for(let i=0;i<h.p.length-1;i++){
+          const [x1,y1]=h.p[i],[x2,y2]=h.p[i+1];
+          const steps=Math.max(1, Math.hypot(x2-x1,y2-y1)*2|0);
+          for(let s=0;s<=steps;s++){
+            const t=s/steps;
+            alleyPoints.push([x1+(x2-x1)*t, y1+(y2-y1)*t]);
+          }
+        }
+      }
+    });
+
+    // 그래피티 스티커 랜덤 스폰 (Q4)
+    state.stickers = [];
+    for(let i=0;i<5;i++){
+      const pt = alleyPoints.length > 0 ? alleyPoints[Math.floor(Math.random() * alleyPoints.length)] : getRandomRoadPoint();
+      state.stickers.push({ gx: pt[0], gy: pt[1], taken: false, icon: '🎨' });
+    }
+
+    // 버려진 물건 랜덤 스폰 (Q5)
+    state.lostItems = [];
+    const itemIcons = ['📚', '🎧', '☂️', '🔑', '🎒'];
+    const itemNames = ['영어 교재', '무선 이어폰', '노란 우산', '아파트 열쇠', '보조 배터리'];
+    for(let i=0;i<5;i++){
+      const pt = getRandomRoadPoint();
+      state.lostItems.push({ gx: pt[0], gy: pt[1], taken: false, icon: itemIcons[i], name: itemNames[i] });
+    }
+
+    // 길고양이 랜덤 스폰 (Q6)
+    state.cats = [];
+    for(let i=0;i<4;i++){
+      const pt = getRandomRoadPoint();
+      state.cats.push({ gx: pt[0], gy: pt[1], fed: false, icon: '🐱' });
+    }
+
+    // 와이프의 부탁 로봇 장난감 스폰 (Q7)
+    const sambuRobot = namedBuildings.find(b=>b.n==='삼부프라자');
+    const robotPt = sambuRobot ? findRoadNear(sambuRobot.cx + (Math.random() * 2 - 1), sambuRobot.cy - 1.5) : [20, 20];
+    state.toyRobot = { gx: robotPt[0], gy: robotPt[1], taken: false, icon: '🤖' };
+
+    // 야간용 학생 (Q8)
+    const studentStart = getRandomRoadPoint();
+    state.suspiciousStudent = { gx: studentStart[0], gy: studentStart[1], speed: 0.018, tgt: null, icon: '🧑‍🎓' };
+
+    // 야간용 귀신 (Q9)
+    const churchGhost = namedBuildings.find(b=>b.n==='서울제일교회');
+    const ghostPt = churchGhost ? [churchGhost.cx + 0.8, churchGhost.cy + 0.8] : [28.7, 21.1];
+    state.ghost = { gx: ghostPt[0], gy: ghostPt[1], investigated: false, icon: '👻' };
   }
 
-  const state={running:false,time:150,anger:0,cluesFound:0,lastKakao:0,tick:0};
+  const state={running:false,time:150,anger:0,cluesFound:0,lastKakao:0,tick:0,quests:[],stickers:[],lostItems:[],cats:[],toyRobot:null,suspiciousStudent:null,ghost:null};
 
   // ========== INPUT ==========
   // codeToKey: e.code → logical key name used throughout the game
@@ -968,7 +1216,8 @@ window.addEventListener('message', function(ev) {
     'ArrowUp':'arrowup', 'ArrowDown':'arrowdown',
     'ArrowLeft':'arrowleft', 'ArrowRight':'arrowright',
     'ShiftLeft':'shift', 'ShiftRight':'shift',
-    'Space':' ', 'KeyZ':'z', 'KeyF':'f', 'KeyM':'m'
+    'Space':' ', 'KeyZ':'z', 'KeyF':'f', 'KeyM':'m',
+    'KeyQ':'q'
   };
   const keys={};
   window.addEventListener('keydown',e=>{
@@ -980,6 +1229,19 @@ window.addEventListener('message', function(ev) {
         e.preventDefault();
       if(logical==='f') { e.preventDefault(); toggleFullscreen(); }
       if(logical==='m') { e.preventDefault(); toggleSound(); }
+      if(logical==='q') {
+        e.preventDefault();
+        const modal = document.getElementById('quest-modal');
+        if(modal) {
+          SFX.click();
+          if(modal.style.display === 'flex') {
+            modal.style.display = 'none';
+          } else {
+            renderQuestList();
+            modal.style.display = 'flex';
+          }
+        }
+      }
     }
   });
   window.addEventListener('keyup',e=>{
@@ -1143,6 +1405,24 @@ window.addEventListener('message', function(ev) {
     SFX.click();
   });
 
+  const btnQuests = document.getElementById('btn-quests');
+  const qModal = document.getElementById('quest-modal');
+  const qClose = document.getElementById('quest-close-btn');
+  if(btnQuests) {
+    btnQuests.addEventListener('click', () => {
+      initAudio();
+      SFX.click();
+      renderQuestList();
+      if(qModal) qModal.style.display = 'flex';
+    });
+  }
+  if(qClose) {
+    qClose.addEventListener('click', () => {
+      SFX.click();
+      if(qModal) qModal.style.display = 'none';
+    });
+  }
+
   function onResize() {
     if (!renderer || !camera || !canvas3d) return;
     const holder = document.getElementById('canvas-holder');
@@ -1224,10 +1504,95 @@ window.addEventListener('message', function(ev) {
   // ========== DRAWING REMOVED ==========
 
   // ========== UPDATE ==========
+  function completeQuest(id) {
+    if(!state.quests) return;
+    const q = state.quests.find(x => x.id === id);
+    if (q && !q.completed) {
+      q.completed = true;
+      q.progress = q.target;
+      if (typeof SFX !== 'undefined' && SFX.questComplete) {
+        SFX.questComplete();
+      }
+      
+      updateQuestUI();
+      
+      const banner = document.getElementById('quest-banner');
+      const text = document.getElementById('quest-banner-text');
+      if (banner && text) {
+        text.textContent = `퀘스트 완료! 🎉 ${q.name}`;
+        banner.classList.add('show');
+        setTimeout(() => {
+          banner.classList.remove('show');
+        }, 3000);
+      }
+      
+      showKakao(`📢 퀘스트 완료: [${q.name}] 완료되었습니다!`);
+    }
+  }
+
+  function updateQuestUI() {
+    if(!state.quests) return;
+    const completedCount = state.quests.filter(q => q.completed).length;
+    const questsValEl = document.getElementById('quests-val');
+    const questsBarEl = document.getElementById('quests-bar');
+    if (questsValEl) {
+      questsValEl.textContent = `${completedCount} / 11`;
+    }
+    if (questsBarEl) {
+      questsBarEl.style.width = `${(completedCount / 11) * 100}%`;
+    }
+    renderQuestList();
+  }
+
+  function renderQuestList() {
+    const listEl = document.getElementById('quest-list');
+    if(!listEl || !state.quests) return;
+    
+    listEl.innerHTML = state.quests.map(q => {
+      const pct = Math.round((q.progress / q.target) * 100);
+      const categoryLabel = {
+        daily: '일상/가벼움',
+        explore: '탐험/수집',
+        story: '스토리/미스터리',
+        special: '특수 챌린지'
+      }[q.category];
+      
+      return `
+        <div class="quest-item ${q.completed ? 'completed' : ''}">
+          <div class="quest-header">
+            <span style="display:flex;align-items:center;gap:6px">
+              ${q.completed ? '✅' : '📌'} ${q.name}
+            </span>
+            <span class="quest-category qc-${q.category}">${categoryLabel}</span>
+          </div>
+          <div class="quest-desc">${q.desc}</div>
+          <div class="quest-bar-wrap">
+            <div class="quest-bar">
+              <div class="quest-bar-fill" style="width: ${pct}%"></div>
+            </div>
+            <span class="quest-progress-txt">${q.progress} / ${q.target}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function triggerFlash() {
+    const flash = document.getElementById('camera-flash');
+    if (flash) {
+      flash.style.opacity = '1';
+      setTimeout(() => {
+        flash.style.opacity = '0';
+      }, 150);
+    }
+    if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
+  }
+
   function tryMove(ent,dx,dy){
     const nx=ent.gx+dx,ny=ent.gy+dy;
-    if(!isBlocked(nx,ent.gy))ent.gx=nx;
-    if(!isBlocked(ent.gx,ny))ent.gy=ny;
+    const isPlayerFlying = (ent === player && player.gz > 1.5);
+    if(isPlayerFlying || !isBlocked(nx,ent.gy))ent.gx=nx;
+    if(isPlayerFlying || !isBlocked(ent.gx,ny))ent.gy=ny;
     ent.gx=Math.max(0.3,Math.min(MAP.gs-0.3,ent.gx));
     ent.gy=Math.max(0.3,Math.min(MAP.gs-0.3,ent.gy));
   }
@@ -1236,6 +1601,18 @@ window.addEventListener('message', function(ev) {
     if(!state.running)return;
     state.tick++;
     state.time+=dt; // Count up exploration time
+    // 주기적으로 로컬스토리지 자동저장 (3초마다)
+    if(!state._saveTimer) state._saveTimer = 0;
+    state._saveTimer += dt;
+    if (state._saveTimer > 3.0) {
+      state._saveTimer = 0;
+      saveGame();
+    }
+    // 시간대 계산 (낮 0~60초, 저녁 60~120초, 밤 120~180초 순환)
+    const timeOfDay = Math.floor(state.time / 60) % 3;
+    const timeLabel = ['낮 ☀️', '저녁 🌇', '밤 🌙'][timeOfDay];
+    const timeLabelEl = document.getElementById('time-label');
+    if(timeLabelEl) timeLabelEl.textContent = `🕒 탐색 시간 (${timeLabel})`;
 
     if(player.attackTimer > 0) player.attackTimer = Math.max(0, player.attackTimer - dt);
     if(player.attackCooldown > 0) player.attackCooldown = Math.max(0, player.attackCooldown - dt);
@@ -1260,7 +1637,14 @@ window.addEventListener('message', function(ev) {
     }
 
     // Jump / Jetpack physics
-    if(player.gz > 0 || player.vz > 0){
+    let floorZ = 0;
+    const underBuilding = getBuildingUnder(player.gx, player.gy);
+    if(underBuilding) {
+      const height = underBuilding.a ? (underBuilding.a * 0.95) : (LANDMARKS[underBuilding.n] ? 3.8 : 2.2);
+      floorZ = height;
+    }
+
+    if(player.gz > floorZ || player.vz > 0){
       // Reduced gravity while holding jetpack Z key to hover
       const gravity = keys['z'] ? -8 : -26;
       player.vz += gravity * dt;
@@ -1272,10 +1656,12 @@ window.addEventListener('message', function(ev) {
         player.vz = Math.min(0, player.vz); // halt upward velocity
       }
       
-      if(player.gz <= 0){
-        player.gz = 0;
+      if(player.gz <= floorZ){
+        player.gz = floorZ;
         player.vz = 0;
       }
+    } else {
+      player.gz = floorZ;
     }
 
     let dx=0,dy=0;
@@ -1356,7 +1742,7 @@ window.addEventListener('message', function(ev) {
       return;
     }
 
-    teachers.forEach(t=>{
+    teachers.forEach((t, idx)=>{
       // Teachers patrol peacefully as friendly NPCs
       t.state = 'patrol';
       const tar=t.path[t.pIdx];
@@ -1377,6 +1763,22 @@ window.addEventListener('message', function(ev) {
         ];
         showHint(msgs[Math.floor(Math.random()*msgs.length)]);
         setTimeout(()=>{t._hit=false;},4000);
+
+        // Q1 (학원 선생님과 인사하기)
+        if (state.quests) {
+          const q1 = state.quests.find(q=>q.id===1);
+          if (q1 && !q1.completed) {
+            if (!q1.met) q1.met = [];
+            if (!q1.met.includes(idx)) {
+              q1.met.push(idx);
+              q1.progress = q1.met.length;
+              updateQuestUI();
+              if (q1.progress >= q1.target) {
+                completeQuest(1);
+              }
+            }
+          }
+        }
       }
     });
 
@@ -1413,6 +1815,167 @@ window.addEventListener('message', function(ev) {
       }
     });
 
+    // ── 퀘스트 트리거 및 상태 검사 (Q2-Q7, Q10-Q11) ──
+    if (state.quests) {
+      // Q2 (추억의 장소)
+      const q2 = state.quests.find(q=>q.id===2);
+      if(q2 && !q2.completed) {
+        const pc = namedBuildings.find(b=>b.n==='I JIN Building');
+        const snack = namedBuildings.find(b=>b.n==='두타빌 B동');
+        const comic = namedBuildings.find(b=>b.n==='유경빌딩');
+        let changed = false;
+        if(pc && !q2.visited.pc && Math.hypot(player.gx-pc.cx, player.gy-pc.cy) < 2.5) {
+          q2.visited.pc = true; q2.progress++; changed = true;
+          showHint('🎮 [추억의 장소] I JIN 빌딩 PC방 방문 완료!');
+        }
+        if(snack && !q2.visited.snack && Math.hypot(player.gx-snack.cx, player.gy-snack.cy) < 2.5) {
+          q2.visited.snack = true; q2.progress++; changed = true;
+          showHint('🍢 [추억의 장소] 두타빌 B동 분식집 골목 방문 완료!');
+        }
+        if(comic && !q2.visited.comic && Math.hypot(player.gx-comic.cx, player.gy-comic.cy) < 2.5) {
+          q2.visited.comic = true; q2.progress++; changed = true;
+          showHint('📚 [추억의 장소] 유경빌딩 만화방 방문 완료!');
+        }
+        if(changed) {
+          updateQuestUI();
+          if(q2.progress >= q2.target) completeQuest(2);
+        }
+      }
+
+      // Q4 (그래피티 찾기)
+      if(state.stickers) {
+        state.stickers.forEach(s => {
+          if (!s.taken && Math.hypot(player.gx - s.gx, player.gy - s.gy) < 0.8) {
+            s.taken = true;
+            SFX.clue();
+            showHint('🎨 골목에 숨겨진 그래피티 스티커 발견!');
+            const q4 = state.quests.find(q=>q.id===4);
+            if(q4 && !q4.completed) {
+              q4.progress++;
+              updateQuestUI();
+              if(q4.progress >= q4.target) completeQuest(4);
+            }
+          }
+        });
+      }
+
+      // Q5 (버려진 물건)
+      if(state.lostItems) {
+        state.lostItems.forEach(item => {
+          if (!item.taken && Math.hypot(player.gx - item.gx, player.gy - item.gy) < 0.8) {
+            item.taken = true;
+            SFX.clue();
+            showHint(`🎒 분실물 발견: ${item.icon} ${item.name}!`);
+            const q5 = state.quests.find(q=>q.id===5);
+            if(q5 && !q5.completed) {
+              q5.progress++;
+              updateQuestUI();
+              if(q5.progress >= q5.target) completeQuest(5);
+            }
+          }
+        });
+      }
+
+      // Q6 (고양이 먹이 주기)
+      if(state.cats) {
+        state.cats.forEach(cat => {
+          if (!cat.fed && Math.hypot(player.gx - cat.gx, player.gy - cat.gy) < 0.9) {
+            cat.fed = true;
+            SFX.talk();
+            showHint('🐈 길고양이를 발견해 먹이를 주었습니다. 야옹~');
+            const q6 = state.quests.find(q=>q.id===6);
+            if(q6 && !q6.completed) {
+              q6.progress++;
+              updateQuestUI();
+              if(q6.progress >= q6.target) completeQuest(6);
+            }
+          }
+        });
+      }
+
+      // Q7 (로봇 장난감)
+      if(state.toyRobot && !state.toyRobot.taken && Math.hypot(player.gx - state.toyRobot.gx, player.gy - state.toyRobot.gy) < 0.8) {
+        state.toyRobot.taken = true;
+        SFX.clue();
+        showHint('🤖 준서가 잃어버렸던 장난감 로봇을 수집했습니다!');
+        const q7 = state.quests.find(q=>q.id===7);
+        if(q7 && !q7.completed) {
+          q7.progress = 1;
+          updateQuestUI();
+          completeQuest(7);
+        }
+      }
+
+      // Q8 (학원생 미행 - 밤에만 작동)
+      const q8 = state.quests.find(q=>q.id===8);
+      if(q8 && !q8.completed && state.suspiciousStudent) {
+        if(timeOfDay === 2) { // 밤
+          const distToStudent = Math.hypot(player.gx - state.suspiciousStudent.gx, player.gy - state.suspiciousStudent.gy);
+          if (distToStudent < 1.6) {
+            q8.activeTimer += dt;
+            q8.progress = Math.min(q8.target, Math.floor(q8.activeTimer));
+            if(q8.progress >= q8.target) completeQuest(8);
+            updateQuestUI();
+          } else {
+            q8.activeTimer = Math.max(0, q8.activeTimer - dt * 0.5);
+            q8.progress = Math.floor(q8.activeTimer);
+            updateQuestUI();
+          }
+        }
+      }
+
+      // Q9 (귀신 조사 - 밤에만 작동)
+      const q9 = state.quests.find(q=>q.id===9);
+      if(q9 && !q9.completed && state.ghost && timeOfDay === 2) {
+        if (Math.hypot(player.gx - state.ghost.gx, player.gy - state.ghost.gy) < 1.2) {
+          state.ghost.investigated = true;
+          SFX.teacher(); // spooky sound
+          showHint('👻 으스스한 은행사거리 귀신을 조사하는 데 성공했습니다!');
+          q9.progress = 1;
+          updateQuestUI();
+          completeQuest(9);
+        }
+      }
+
+      // Q10 (제트팩 옥상 착륙)
+      const q10 = state.quests.find(q=>q.id===10);
+      if(q10 && !q10.completed) {
+        const sambu = namedBuildings.find(b=>b.n==='삼부프라자');
+        if (sambu) {
+          const onRoof = pointInPoly(player.gx, player.gy, sambu.p);
+          if (onRoof && player.gz > 3.0 && Math.abs(player.vz) < 0.1) {
+            q10.progress = 1;
+            updateQuestUI();
+            completeQuest(10);
+            showHint('🚀 삼부프라자 옥상 안전 착륙에 성공했습니다!');
+          }
+        }
+      }
+
+      // Q11 (전경 사진 촬영)
+      const q11 = state.quests.find(q=>q.id===11);
+      if(q11 && !q11.completed) {
+        if (player.gz > 7.0 && Math.hypot(player.gx - 20, player.gy - 20) < 5.0) {
+          triggerFlash();
+          q11.progress = 1;
+          updateQuestUI();
+          completeQuest(11);
+          showHint('📸 높은 상공에서 은행사거리의 전경을 찰칵 찍었습니다!');
+        }
+      }
+    }
+
+    // 야간용 학생 NPC AI 동작 (밤에만)
+    if(state.suspiciousStudent && timeOfDay === 2) {
+      if(!state.suspiciousStudent.tgt || Math.hypot(state.suspiciousStudent.tgt[0]-state.suspiciousStudent.gx, state.suspiciousStudent.tgt[1]-state.suspiciousStudent.gy) < 0.5) {
+        state.suspiciousStudent.tgt = roadPoints[Math.floor(Math.random() * roadPoints.length)];
+      }
+      const tx = state.suspiciousStudent.tgt[0] - state.suspiciousStudent.gx;
+      const ty = state.suspiciousStudent.tgt[1] - state.suspiciousStudent.gy;
+      const tl = Math.hypot(tx, ty) || 1;
+      tryMove(state.suspiciousStudent, (tx/tl)*state.suspiciousStudent.speed, (ty/tl)*state.suspiciousStudent.speed);
+    }
+
     const t=Math.floor(state.time);
     if(t!==state.lastKakao && t>0 && t%30===0){
       state.lastKakao=t;
@@ -1425,14 +1988,21 @@ window.addEventListener('message', function(ev) {
   }
 
   // ========== THREE.JS 3D SYSTEM ==========
-  let scene, camera, renderer, shadowLight;
+  let scene, camera, renderer, shadowLight, ambientLight;
   let tMeshes = {
     player: null,
     son: null,
     teachers: [],
     siblings: [],
     clues: [],
-    buildingMeshes: []
+    buildingMeshes: [],
+    stickers: [],
+    lostItems: [],
+    cats: [],
+    toyRobot: null,
+    suspiciousStudent: null,
+    ghost: null,
+    streetlights: []
   };
 
   const curveUniforms = {
@@ -1643,8 +2213,8 @@ window.addEventListener('message', function(ev) {
     genericWallTexs = concretePlazaColors.map(col => createFacadeTexture(1, col));
     apartmentWallTex = createFacadeTexture(2, '#e6e8ec');
  
-    const ambient = new THREE.AmbientLight(0xffffff, 0.95); // Bright daylight ambient fill
-    scene.add(ambient);
+    ambientLight = new THREE.AmbientLight(0xffffff, 0.95); // Bright daylight ambient fill
+    scene.add(ambientLight);
  
     shadowLight = new THREE.DirectionalLight(0xfffaed, 0.85); // High clear sunlight
     shadowLight.position.set(20, 38, -15);
@@ -2194,18 +2764,15 @@ window.addEventListener('message', function(ev) {
       // 월드 좌표 → 화면 방향 각도 계산
       const dx = son.gx - player.gx;
       const dy = son.gy - player.gy;
-      // 쿼터뷰 카메라는 Y축이 +z(아래) 방향이므로 atan2 그대로 사용
       const angleRad = Math.atan2(dy, dx);
-      const angleDeg = angleRad * 180 / Math.PI + 90; // 화살표 기본 방향(위)에 맞춰 +90
+      const angleDeg = angleRad * 180 / Math.PI + 90;
 
-      // 화살표를 화면 중앙 기준 가장자리에 배치 (64px 안쪽)
       const holder = document.getElementById('canvas-holder');
       const W = holder.clientWidth;
       const H = holder.clientHeight;
       const margin = 80;
       const cx = W / 2, cy = H / 2;
 
-      // 가장자리 교차점 계산
       const cos = Math.cos(angleRad), sin = Math.sin(angleRad);
       const scaleX = cos !== 0 ? (W/2 - margin) / Math.abs(cos) : Infinity;
       const scaleY = sin !== 0 ? (H/2 - margin) / Math.abs(sin) : Infinity;
@@ -2216,29 +2783,81 @@ window.addEventListener('message', function(ev) {
       wrapEl.style.left = (ex - 36) + 'px';
       wrapEl.style.top  = (ey - 36) + 'px';
       wrapEl.style.setProperty('--arrow-rot', angleDeg + 'deg');
-      // 개별 transform으로 회전 (pulse 애니메이션이 CSS var로 못 동작하는 브라우저 대비)
       wrapEl.style.transform = `rotate(${angleDeg}deg)`;
 
-      // 거리 표시
       const dist = Math.hypot(dx, dy).toFixed(1);
       const distLabel = state.cluesFound >= 3 ? `🎯 ${dist}m — 지금 잡아!` : `준서 방향 · ${dist}m`;
       labelEl.textContent = distLabel;
-      labelEl.style.transform = `translateX(-50%) rotate(${-angleDeg}deg)`; // 라벨은 항상 수평
+      labelEl.style.transform = `translateX(-50%) rotate(${-angleDeg}deg)`;
     })();
 
+    // ── 시간대별 조명/안개 연출 실시간 보간 (Day-Night Cycle) ──
+    const timeOfDay = Math.floor(state.time / 60) % 3;
+    let targetBg, targetFog, targetAmbientCol, targetAmbientIntensity;
+    let targetSunCol, targetSunIntensity;
+    let targetBeamOpacity, targetPlIntensity;
+    
+    if (timeOfDay === 0) { // 낮
+      targetBg = new THREE.Color(0xdcefff);
+      targetFog = new THREE.Color(0xdcefff);
+      targetAmbientCol = new THREE.Color(0xffffff);
+      targetAmbientIntensity = 0.95;
+      targetSunCol = new THREE.Color(0xfffaed);
+      targetSunIntensity = 0.85;
+      targetBeamOpacity = 0.0;
+      targetPlIntensity = 0.0;
+    } else if (timeOfDay === 1) { // 저녁 (노을)
+      targetBg = new THREE.Color(0xfd7e14);
+      targetFog = new THREE.Color(0xfd7e14);
+      targetAmbientCol = new THREE.Color(0xffaa66);
+      targetAmbientIntensity = 0.65;
+      targetSunCol = new THREE.Color(0xff5500);
+      targetSunIntensity = 0.55;
+      targetBeamOpacity = 0.05;
+      targetPlIntensity = 0.25;
+    } else { // 밤
+      targetBg = new THREE.Color(0x0a0d1a);
+      targetFog = new THREE.Color(0x0a0d1a);
+      targetAmbientCol = new THREE.Color(0x223355);
+      targetAmbientIntensity = 0.25;
+      targetSunCol = new THREE.Color(0x4466aa);
+      targetSunIntensity = 0.15;
+      targetBeamOpacity = 0.16;
+      targetPlIntensity = 0.75;
+    }
+    
+    scene.background.lerp(targetBg, 0.05);
+    scene.fog.color.lerp(targetFog, 0.05);
+    if (ambientLight) {
+      ambientLight.color.lerp(targetAmbientCol, 0.05);
+      ambientLight.intensity += (targetAmbientIntensity - ambientLight.intensity) * 0.05;
+    }
+    if (shadowLight) {
+      shadowLight.color.lerp(targetSunCol, 0.05);
+      shadowLight.intensity += (targetSunIntensity - shadowLight.intensity) * 0.05;
+    }
+    
+    if (tMeshes.streetlights) {
+      tMeshes.streetlights.forEach(sl => {
+        if(sl.beam && sl.beam.material) {
+          sl.beam.material.opacity += (targetBeamOpacity - sl.beam.material.opacity) * 0.05;
+        }
+        if(sl.pl) {
+          sl.pl.intensity += (targetPlIntensity - sl.pl.intensity) * 0.05;
+        }
+      });
+    }
+
     if(!tMeshes.player){
-      // 아빠: 화사한 파란 멜빵바지 및 갈색 머리 파스텔 리뉴얼
       tMeshes.player = create3DCharacter({body:'#5894d4',head:'#fbdcb9',hair:'#4a3319',legs:'#2f4b7c'});
     }
     const pm = tMeshes.player;
     pm.position.set(player.gx - 20, player.gz, player.gy - 20);
     
-    // Toggle visual jetpack thruster flame meshes based on Z key input
     if (pm.userData.flames) {
       const isFlying = keys['z'] && player.gz > 0.05;
       pm.userData.flames.visible = isFlying;
       if (isFlying) {
-        // Flicker vertical flame scale slightly
         const scaleY = 1.0 + Math.sin(state.tick * 2.5) * 0.35;
         pm.userData.flames.scale.set(1.0, scaleY, 1.0);
       }
@@ -2254,7 +2873,6 @@ window.addEventListener('message', function(ev) {
 
     if(!son.hidden){
       if(!tMeshes.son){
-        // 아들: 피치 핑크 상의 파스텔 리뉴얼
         tMeshes.son = create3DCharacter({body:'#f07d8d',head:'#ffebd3',hair:'#2c1e11',legs:'#555555'});
       }
       tMeshes.son.visible = true;
@@ -2271,7 +2889,6 @@ window.addEventListener('message', function(ev) {
 
     if(tMeshes.teachers.length === 0){
       teachers.forEach(() => {
-        // 선생님: 민트 그린 셔츠 파스텔 리뉴얼
         const tm = create3DCharacter({body:'#b0ddb0',head:'#fae3cb',hair:'#6a513b',legs:'#4a6b4a'});
         const stunSprite = createTextSprite('💫', '#fff');
         const alertSprite = createTextSprite('💢', '#ff3333');
@@ -2287,25 +2904,26 @@ window.addEventListener('message', function(ev) {
 
     teachers.forEach((t, idx) => {
       const tm = tMeshes.teachers[idx];
-      tm.position.set(t.gx - 20, 0, t.gy - 20);
-      
-      const isMoving = (t.stunTimer <= 0 && t.kbTimer <= 0);
-      animateCharacter(tm, state.tick * 0.2, isMoving, 0);
+      if (tm) {
+        tm.position.set(t.gx - 20, 0, t.gy - 20);
+        const isMoving = (t.stunTimer <= 0 && t.kbTimer <= 0);
+        animateCharacter(tm, state.tick * 0.2, isMoving, 0);
 
-      if (t.state === 'chase') {
-        const angle = -Math.atan2(player.gy - t.gy, player.gx - t.gx) + Math.PI/2;
-        tm.rotation.y = angle;
-      } else {
-        const tar = t.path[t.pIdx];
-        const angle = -Math.atan2(tar[1] - t.gy, tar[0] - t.gx) + Math.PI/2;
-        tm.rotation.y = angle;
-      }
+        if (t.state === 'chase') {
+          const angle = -Math.atan2(player.gy - t.gy, player.gx - t.gx) + Math.PI/2;
+          tm.rotation.y = angle;
+        } else {
+          const tar = t.path[t.pIdx];
+          const angle = -Math.atan2(tar[1] - t.gy, tar[0] - t.gx) + Math.PI/2;
+          tm.rotation.y = angle;
+        }
 
-      tm.userData.stunSprite.visible = (t.stunTimer > 0);
-      tm.userData.alertSprite.visible = (t.state === 'chase' && t.stunTimer <= 0);
-      
-      if(t.stunTimer > 0){
-        tm.userData.stunSprite.rotation.z += 0.15;
+        tm.userData.stunSprite.visible = (t.stunTimer > 0);
+        tm.userData.alertSprite.visible = (t.state === 'chase' && t.stunTimer <= 0);
+        
+        if(t.stunTimer > 0){
+          tm.userData.stunSprite.rotation.z += 0.15;
+        }
       }
     });
 
@@ -2323,7 +2941,7 @@ window.addEventListener('message', function(ev) {
 
     siblings.forEach((s, idx) => {
       const sm = tMeshes.siblings[idx];
-      sm.visible = !s.spoken;
+      if (sm) sm.visible = !s.spoken;
     });
 
     if(tMeshes.clues.length === 0){
@@ -2337,18 +2955,123 @@ window.addEventListener('message', function(ev) {
 
     clues.forEach((c, idx) => {
       const cm = tMeshes.clues[idx];
-      cm.visible = !c.taken;
-      if(!c.taken){
-        cm.position.y = 0.8 + Math.sin(state.tick * 0.15) * 0.15;
+      if (cm) {
+        cm.visible = !c.taken;
+        if(!c.taken){
+          cm.position.y = 0.8 + Math.sin(state.tick * 0.15) * 0.15;
+        }
       }
     });
+
+    // ── 그래피티 스티커 (🎨) 렌더링 ──
+    if(tMeshes.stickers.length === 0 && state.stickers){
+      state.stickers.forEach(s => {
+        const sm = createTextSprite(s.icon, '#ff66aa');
+        sm.position.set(s.gx - 20, 0.4, s.gy - 20);
+        scene.add(sm);
+        tMeshes.stickers.push(sm);
+      });
+    }
+    if(state.stickers) {
+      state.stickers.forEach((s, idx) => {
+        const sm = tMeshes.stickers[idx];
+        if (sm) sm.visible = !s.taken;
+      });
+    }
+
+    // ── 버려진 물건 (📚/🎧/☂️/🔑/🎒) 렌더링 ──
+    if(tMeshes.lostItems.length === 0 && state.lostItems){
+      state.lostItems.forEach(item => {
+        const im = createTextSprite(item.icon, '#ffffff');
+        im.position.set(item.gx - 20, 0.5, item.gy - 20);
+        scene.add(im);
+        tMeshes.lostItems.push(im);
+      });
+    }
+    if(state.lostItems) {
+      state.lostItems.forEach((item, idx) => {
+        const im = tMeshes.lostItems[idx];
+        if (im) {
+          im.visible = !item.taken;
+          if(!item.taken) {
+            im.position.y = 0.5 + Math.sin(state.tick * 0.12 + idx) * 0.1;
+          }
+        }
+      });
+    }
+
+    // ── 길고양이 (🐱) 렌더링 ──
+    if(tMeshes.cats.length === 0 && state.cats){
+      state.cats.forEach(c => {
+        const cm = createTextSprite(c.icon, '#ffaa44');
+        cm.position.set(c.gx - 20, 0.4, c.gy - 20);
+        scene.add(cm);
+        tMeshes.cats.push(cm);
+      });
+    }
+    if(state.cats) {
+      state.cats.forEach((c, idx) => {
+        const cm = tMeshes.cats[idx];
+        if (cm) {
+          cm.visible = !c.fed;
+          if(!c.fed) {
+            cm.position.y = 0.4 + Math.abs(Math.sin(state.tick * 0.08 + idx)) * 0.12;
+          }
+        }
+      });
+    }
+
+    // ── 로봇 장난감 (🤖) 렌더링 ──
+    if(!tMeshes.toyRobot && state.toyRobot){
+      tMeshes.toyRobot = createTextSprite(state.toyRobot.icon, '#66ccff');
+      tMeshes.toyRobot.position.set(state.toyRobot.gx - 20, 0.6, state.toyRobot.gy - 20);
+      scene.add(tMeshes.toyRobot);
+    }
+    if(state.toyRobot && tMeshes.toyRobot){
+      tMeshes.toyRobot.visible = !state.toyRobot.taken;
+      if(!state.toyRobot.taken) {
+        tMeshes.toyRobot.position.y = 0.6 + Math.sin(state.tick * 0.2) * 0.12;
+      }
+    }
+
+    // ── 야간 학생 (🧑‍🎓) 렌더링 ──
+    if(!tMeshes.suspiciousStudent && state.suspiciousStudent){
+      tMeshes.suspiciousStudent = create3DCharacter({body:'#e1b12c',head:'#fed330',hair:'#2d3436',legs:'#4b6584'});
+      scene.add(tMeshes.suspiciousStudent);
+    }
+    if(state.suspiciousStudent && tMeshes.suspiciousStudent){
+      const isNight = (timeOfDay === 2);
+      const q8 = state.quests.find(q=>q.id===8);
+      tMeshes.suspiciousStudent.visible = isNight && q8 && !q8.completed;
+      tMeshes.suspiciousStudent.position.set(state.suspiciousStudent.gx - 20, 0, state.suspiciousStudent.gy - 20);
+      
+      const isMoving = (state.suspiciousStudent.tgt !== null);
+      animateCharacter(tMeshes.suspiciousStudent, state.tick * 0.25, isNight && isMoving, 0);
+      if(state.suspiciousStudent.tgt) {
+        const angle = -Math.atan2(state.suspiciousStudent.tgt[1] - state.suspiciousStudent.gy, state.suspiciousStudent.tgt[0] - state.suspiciousStudent.gx) + Math.PI/2;
+        tMeshes.suspiciousStudent.rotation.y = angle;
+      }
+    }
+
+    // ── 야간 귀신 (👻) 렌더링 ──
+    if(!tMeshes.ghost && state.ghost){
+      tMeshes.ghost = createTextSprite(state.ghost.icon, '#ffffff');
+      tMeshes.ghost.material.opacity = 0.65;
+      tMeshes.ghost.material.transparent = true;
+      scene.add(tMeshes.ghost);
+    }
+    if(state.ghost && tMeshes.ghost){
+      const isNight = (timeOfDay === 2);
+      const q9 = state.quests.find(q=>q.id===9);
+      tMeshes.ghost.visible = isNight && q9 && !q9.completed;
+      tMeshes.ghost.position.set(state.ghost.gx - 20, 0.7 + Math.sin(state.tick * 0.1) * 0.15, state.ghost.gy - 20);
+    }
 
     const targetCamX = player.gx - 20;
     const targetCamZ = player.gy - 20;
     
-    // Diablo-style 45-degree fixed top-down camera (offset in Y and Z, looking North-Down)
-    const camOffsetY = 13.0; // Height above the player
-    const camOffsetZ = 10.0; // Distance behind the player (South)
+    const camOffsetY = 13.0;
+    const camOffsetZ = 10.0;
     
     camera.position.x += (targetCamX - camera.position.x) * 0.08;
     camera.position.y += (player.gz + camOffsetY - camera.position.y) * 0.08;
@@ -2356,7 +3079,6 @@ window.addEventListener('message', function(ev) {
 
     camera.lookAt(targetCamX, player.gz, targetCamZ - 0.5);
 
-    // Warm ambient personal light source attached to the player (Diablo-style light circle!)
     if (!player.light && scene) {
       player.light = new THREE.PointLight(0xffeaad, 1.25, 8.0);
       scene.add(player.light);
@@ -2485,13 +3207,7 @@ window.addEventListener('message', function(ev) {
   resetEntities();
   requestAnimationFrame(loop);
 
-  window.startGame=function(){
-    initAudio();
-    if(audio.ctx && audio.ctx.state==='suspended') audio.ctx.resume();
-    init3D();
-    SFX.start();
-    resetEntities();
-    
+  function clearAllMeshes() {
     if(tMeshes.player){ scene.remove(tMeshes.player); tMeshes.player = null; }
     if(tMeshes.son){ scene.remove(tMeshes.son); tMeshes.son = null; }
     tMeshes.teachers.forEach(t => scene.remove(t));
@@ -2500,11 +3216,171 @@ window.addEventListener('message', function(ev) {
     tMeshes.siblings = [];
     tMeshes.clues.forEach(c => scene.remove(c));
     tMeshes.clues = [];
+    if(tMeshes.stickers) { tMeshes.stickers.forEach(m => scene.remove(m)); tMeshes.stickers = []; }
+    if(tMeshes.lostItems) { tMeshes.lostItems.forEach(m => scene.remove(m)); tMeshes.lostItems = []; }
+    if(tMeshes.cats) { tMeshes.cats.forEach(m => scene.remove(m)); tMeshes.cats = []; }
+    if(tMeshes.toyRobot) { scene.remove(tMeshes.toyRobot); tMeshes.toyRobot = null; }
+    if(tMeshes.suspiciousStudent) { scene.remove(tMeshes.suspiciousStudent); tMeshes.suspiciousStudent = null; }
+    if(tMeshes.ghost) { scene.remove(tMeshes.ghost); tMeshes.ghost = null; }
+  }
+
+  function saveGame() {
+    if (!state.running) return;
+    const saveData = {
+      state: {
+        time: state.time,
+        anger: state.anger,
+        cluesFound: state.cluesFound,
+        lastKakao: state.lastKakao,
+        tick: state.tick,
+        quests: state.quests,
+        stickers: state.stickers,
+        lostItems: state.lostItems,
+        cats: state.cats,
+        toyRobot: state.toyRobot,
+        suspiciousStudent: state.suspiciousStudent,
+        ghost: state.ghost
+      },
+      player: {
+        gx: player.gx,
+        gy: player.gy,
+        gz: player.gz,
+        vz: player.vz,
+        mp: player.mp,
+        dirX: player.dirX,
+        dirY: player.dirY
+      },
+      son: {
+        gx: son.gx,
+        gy: son.gy,
+        speed: son.speed,
+        hidden: son.hidden,
+        hideTimer: son.hideTimer,
+        tgt: son.tgt,
+        tiredMult: son.tiredMult
+      },
+      teachers: teachers.map(t => ({
+        gx: t.gx,
+        gy: t.gy,
+        path: t.path,
+        pIdx: t.pIdx,
+        patrolSpeed: t.patrolSpeed,
+        state: t.state,
+        stunTimer: t.stunTimer
+      })),
+      siblings: siblings.map(s => ({
+        gx: s.gx,
+        gy: s.gy,
+        name: s.name,
+        spoken: s.spoken,
+        msg: s.msg
+      })),
+      clues: clues.map(c => ({
+        gx: c.gx,
+        gy: c.gy,
+        taken: c.taken,
+        icon: c.icon,
+        text: c.text
+      }))
+    };
+    localStorage.setItem('nowon_diablo_save', JSON.stringify(saveData));
+  }
+
+  window.continueGame = function() {
+    const raw = localStorage.getItem('nowon_diablo_save');
+    if (!raw) {
+      window.startNewGame();
+      return;
+    }
+    initAudio();
+    if(audio.ctx && audio.ctx.state==='suspended') audio.ctx.resume();
+    init3D();
+    SFX.start();
+    
+    clearAllMeshes();
+    
+    try {
+      const saveData = JSON.parse(raw);
+      
+      // Restore state variables
+      state.time = saveData.state.time;
+      state.anger = saveData.state.anger;
+      state.cluesFound = saveData.state.cluesFound;
+      state.lastKakao = saveData.state.lastKakao;
+      state.tick = saveData.state.tick;
+      state.quests = saveData.state.quests;
+      state.stickers = saveData.state.stickers;
+      state.lostItems = saveData.state.lostItems;
+      state.cats = saveData.state.cats;
+      state.toyRobot = saveData.state.toyRobot;
+      state.suspiciousStudent = saveData.state.suspiciousStudent;
+      state.ghost = saveData.state.ghost;
+      
+      // Restore entities
+      player = saveData.player;
+      son = saveData.son;
+      teachers = saveData.teachers;
+      siblings = saveData.siblings;
+      clues = saveData.clues;
+      
+      state.running = true;
+      melodyStep = 0; bassStep = 0; musicTimer = 0;
+      camX = player.gx; camY = player.gy;
+      
+      updateQuestUI();
+      
+      // Clues UI progress bar restoration
+      document.getElementById('clues-val').textContent = `${state.cluesFound} / 3`;
+      document.getElementById('clues-bar').style.width = `${(state.cluesFound / 3) * 100}%`;
+      
+      document.getElementById('overlay').style.display = 'none';
+      showKakao('💾 저장이 성공적으로 로드되었습니다! 탐색을 이어갑니다.');
+    } catch (e) {
+      console.error("이어하기 실패:", e);
+      window.startNewGame();
+    }
+  };
+
+  window.startNewGame = function() {
+    localStorage.removeItem('nowon_diablo_save');
+    window.startGame();
+  };
+
+  function checkSaveData() {
+    const save = localStorage.getItem('nowon_diablo_save');
+    const btnContainer = document.getElementById('start-buttons');
+    if(!btnContainer) return;
+    if (save) {
+      btnContainer.innerHTML = `
+        <button class="primary" onclick="continueGame()">⏯️ 이어하기</button>
+        <button class="primary" onclick="startNewGame()" style="background:#556677;margin-left:8px;">🚶 새로하기</button>
+      `;
+    } else {
+      btnContainer.innerHTML = `
+        <button class="primary" onclick="startNewGame()">🚶 탐색 시작!</button>
+      `;
+    }
+  }
+
+  // Load check
+  window.addEventListener('load', checkSaveData);
+
+  window.startGame=function(){
+    initAudio();
+    if(audio.ctx && audio.ctx.state==='suspended') audio.ctx.resume();
+    init3D();
+    SFX.start();
+    resetEntities();
+    
+    clearAllMeshes();
     
     state.running=true;
     state.time=0; state.anger=0; state.cluesFound=0; state.tick=0; state.lastKakao=0;
     melodyStep=0; bassStep=0; musicTimer=0;
     camX=player.gx;camY=player.gy;
+    
+    updateQuestUI();
+    
     document.getElementById('overlay').style.display='none';
     setTimeout(()=>showKakao('준서가 학원을 빼먹고 은행사거리 어딘가로 도망쳤대! 같이 한 번 찾아보자~'), 400);
     setTimeout(()=>showHint('💡 팁: 동네 구석구석을 돌며 단서(📝🥤🎒) 3개를 주워보세요!'), 1500);
@@ -2513,6 +3389,7 @@ window.addEventListener('message', function(ev) {
   // ===== 아들 잡기 컷씬 (대화형 엔딩) =====
   function triggerCatchCutscene(){
     state.running=false;
+    localStorage.removeItem('nowon_diablo_save');
     SFX.catch();
     const ov=document.getElementById('overlay');
     const dialogues=[
@@ -2550,7 +3427,7 @@ window.addEventListener('message', function(ev) {
             <div style="font-size:18px;font-weight:700;margin-bottom:4px">등급 ${rating} — ${gradeMsg[rating]}</div>
             <div style="font-size:12px;opacity:0.65">단서 ${state.cluesFound}/3 · 소요시간 ${formatTime(timeSec)}</div>
           </div>
-          <button class="primary" style="width:100%;margin-top:14px" onclick="startGame()">다시 찾아가기 🔄</button>
+          <button class="primary" style="width:100%;margin-top:14px" onclick="startNewGame()">다시 찾아가기 🔄</button>
         `:`<button class="primary" style="width:100%;margin-top:4px" id="dlg-next">다음 ▶</button>`}
         <div class="attr" style="margin-top:10px">Map data © OpenStreetMap contributors (ODbL)</div>
       </div>`;
@@ -2561,15 +3438,15 @@ window.addEventListener('message', function(ev) {
   }
 
   function endGame(win,msg){
-
     state.running=false;
+    localStorage.removeItem('nowon_diablo_save');
     if(win) SFX.catch(); else SFX.gameover();
     const ov=document.getElementById('overlay');
     ov.innerHTML=`<div class="box">
       <h2>${win?'🏆 미션 클리어!':'💀 게임 오버'}</h2>
       <p>${msg}</p>
       <p style="opacity:.7;font-size:12px;">단서 발견: ${state.cluesFound}/3 · 탐색 시간: ${formatTime(state.time)}</p>
-      <button class="primary" onclick="startGame()">${win?'한 번 더!':'다시 도전'}</button>
+      <button class="primary" onclick="startNewGame()">${win?'한 번 더!':'다시 도전'}</button>
       <div class="attr">Map data © OpenStreetMap contributors (ODbL) · Sounds: Web Audio API synthesis</div>
     </div>`;
     ov.style.display='flex';
