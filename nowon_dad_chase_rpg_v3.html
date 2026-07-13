@@ -1703,10 +1703,41 @@ window.addEventListener('message', function(ev) {
     }
 
     let dx=0,dy=0;
-    if(keys['w']||keys['arrowup'])dy-=1;
-    if(keys['s']||keys['arrowdown'])dy+=1;
-    if(keys['a']||keys['arrowleft'])dx-=1;
-    if(keys['d']||keys['arrowright'])dx+=1;
+    const camMode = state.cameraMode || 0;
+    if (camMode === 1 && typeof THREE !== 'undefined' && camera) {
+      // Calculate camera-relative movement vectors projected on ground (X-Z in Three, X-Y in game)
+      const forward = new THREE.Vector3();
+      camera.getWorldDirection(forward);
+      const lenCam = Math.hypot(forward.x, forward.z) || 1e-6;
+      const fX = forward.x / lenCam;
+      const fY = forward.z / lenCam;
+      const rX = -fY;
+      const rY = fX;
+      
+      let inputX = 0, inputY = 0;
+      if(keys['w']||keys['arrowup']) inputY += 1;
+      if(keys['s']||keys['arrowdown']) inputY -= 1;
+      if(keys['a']||keys['arrowleft']) inputX -= 1;
+      if(keys['d']||keys['arrowright']) inputX += 1;
+      
+      if(inputX !== 0 || inputY !== 0){
+        dx = fX * inputY + rX * inputX;
+        dy = fY * inputY + rY * inputX;
+        const len = Math.hypot(dx, dy);
+        dx = dx / len;
+        dy = dy / len;
+      }
+    } else {
+      if(keys['w']||keys['arrowup'])dy-=1;
+      if(keys['s']||keys['arrowdown'])dy+=1;
+      if(keys['a']||keys['arrowleft'])dx-=1;
+      if(keys['d']||keys['arrowright'])dx+=1;
+      if(dx || dy){
+        const len = Math.hypot(dx, dy);
+        dx = dx / len;
+        dy = dy / len;
+      }
+    }
 
     if(dx || dy){
       const len = Math.hypot(dx, dy);
