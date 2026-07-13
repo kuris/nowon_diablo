@@ -2310,14 +2310,22 @@ window.addEventListener('message', function(ev) {
     group.add(beam);
     
     // Add real point lights for light at intersections (sparingly for performance)
+    let pl = null;
     if (Math.hypot(x - 9.1, z - 3.5) < 9 || Math.random() < 0.22) {
-      const pl = new THREE.PointLight(0xffea99, 0.75, 8);
+      pl = new THREE.PointLight(0xffea99, 0.75, 8);
       pl.position.set(0.22, 2.2, 0);
       group.add(pl);
     }
     
     group.position.set(x, 0, z);
     scene.add(group);
+
+    if (tMeshes.streetlights) {
+      tMeshes.streetlights.push({
+        beam: beam,
+        pl: pl
+      });
+    }
   }
 
   function spawnStreetLights() {
@@ -3246,9 +3254,15 @@ window.addEventListener('message', function(ev) {
         gy: player.gy,
         gz: player.gz,
         vz: player.vz,
+        speed: player.speed,
         mp: player.mp,
+        anim: player.anim,
+        stepTimer: player.stepTimer,
         dirX: player.dirX,
-        dirY: player.dirY
+        dirY: player.dirY,
+        attackTimer: player.attackTimer,
+        attackCooldown: player.attackCooldown,
+        _slowTimer: player._slowTimer || 0
       },
       son: {
         gx: son.gx,
@@ -3262,11 +3276,16 @@ window.addEventListener('message', function(ev) {
       teachers: teachers.map(t => ({
         gx: t.gx,
         gy: t.gy,
+        speed: t.speed,
+        patrolSpeed: t.patrolSpeed,
         path: t.path,
         pIdx: t.pIdx,
-        patrolSpeed: t.patrolSpeed,
         state: t.state,
-        stunTimer: t.stunTimer
+        stunTimer: t.stunTimer,
+        kbTimer: t.kbTimer || 0,
+        kbX: t.kbX || 0,
+        kbY: t.kbY || 0,
+        targetEnt: null
       })),
       siblings: siblings.map(s => ({
         gx: s.gx,
