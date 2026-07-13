@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<style>
+
+:root {
+  --color-brand-primary: #232425;
+  --color-brand-secondary: #0F7FFF;
+  --color-bg-page: #FFFFFF;
+  --color-bg-surface: #FAFAFA;
+  --color-bg-subtle: #F5F5F5;
+  --color-text-primary: #232425;
+  --color-text-secondary: #606366;
+  --color-text-tertiary: #909499;
+  --color-text-disabled: #C4C7CC;
+  --color-text-link: #0F7FFF;
+  --color-text-on-brand: #FFFFFF;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+  --color-border-default: #EAEAEA;
+  --color-border-strong: #D0D3D8;
+  --color-border-subtle: #F2F2F2;
+  --color-border-brand: #0F7FFF;
+  --color-border-error: #EF4444;
+  --color-border-success: #10B981;
+  --space-4: 4px; --space-8: 8px; --space-12: 12px; --space-16: 16px;
+  --space-20: 20px; --space-24: 24px; --space-32: 32px; --space-48: 48px;
+  --text-h1: 36px; --text-h2: 28px; --text-h3: 22px; --text-h4: 18px;
+  --text-body: 16px; --text-small: 14px; --text-caption: 12px;
+  --radius-4: 4px; --radius-8: 8px; --radius-12: 12px;
+  --border-width-1: 1px; --border-width-2: 2px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+
+  /* Categorical color ramps (mirror of design-tokens.css) */
+  --color-cat-blue-50:#EBF3FE;--color-cat-blue-100:#C5DDFC;--color-cat-blue-200:#92BEF8;--color-cat-blue-400:#0F7FFF;--color-cat-blue-600:#0561C5;--color-cat-blue-800:#053F7C;--color-cat-blue-900:#06294F;
+  --color-cat-green-50:#E5F8F1;--color-cat-green-100:#B7EFD8;--color-cat-green-200:#7DE0BA;--color-cat-green-400:#10B981;--color-cat-green-600:#088762;--color-cat-green-800:#045A41;--color-cat-green-900:#023A29;
+  --color-cat-amber-50:#FEF3D9;--color-cat-amber-100:#FCE0A0;--color-cat-amber-200:#FAC865;--color-cat-amber-400:#F59E0B;--color-cat-amber-600:#B16E03;--color-cat-amber-800:#6E4500;--color-cat-amber-900:#422900;
+  --color-cat-red-50:#FDE9E9;--color-cat-red-100:#F9C2C2;--color-cat-red-200:#F49595;--color-cat-red-400:#EF4444;--color-cat-red-600:#C41B1B;--color-cat-red-800:#821212;--color-cat-red-900:#520B0B;
+  --color-cat-purple-50:#F0EAFE;--color-cat-purple-100:#D5C2FB;--color-cat-purple-200:#B59AF8;--color-cat-purple-400:#8B5CF6;--color-cat-purple-600:#6431D2;--color-cat-purple-800:#441E8E;--color-cat-purple-900:#2A1259;
+  --color-cat-teal-50:#DEF7F4;--color-cat-teal-100:#A6EBE2;--color-cat-teal-200:#6BDCCD;--color-cat-teal-400:#14B8A6;--color-cat-teal-600:#0D8779;--color-cat-teal-800:#075A50;--color-cat-teal-900:#043934;
+  --color-cat-coral-50:#FEE7EB;--color-cat-coral-100:#FCC0CA;--color-cat-coral-200:#FA98A8;--color-cat-coral-400:#FB7185;--color-cat-coral-600:#D14258;--color-cat-coral-800:#8C2336;--color-cat-coral-900:#5A111F;
+  --color-cat-pink-50:#FCE4F1;--color-cat-pink-100:#F7BAD9;--color-cat-pink-200:#F18BBE;--color-cat-pink-400:#EC4899;--color-cat-pink-600:#B81F75;--color-cat-pink-800:#7B0F4D;--color-cat-pink-900:#4D0530;
+  --color-cat-gray-50:#F3F4F6;--color-cat-gray-100:#E5E7EB;--color-cat-gray-200:#CBD0D7;--color-cat-gray-400:#6B7280;--color-cat-gray-600:#4A4F58;--color-cat-gray-800:#2A2D33;--color-cat-gray-900:#16181B;
+}
+.c-blue   { fill: var(--color-cat-blue-50);   stroke: var(--color-cat-blue-600);   color: var(--color-cat-blue-800);   background-color: var(--color-cat-blue-50);   border-color: var(--color-cat-blue-600); }
+.c-green  { fill: var(--color-cat-green-50);  stroke: var(--color-cat-green-600);  color: var(--color-cat-green-800);  background-color: var(--color-cat-green-50);  border-color: var(--color-cat-green-600); }
+.c-amber  { fill: var(--color-cat-amber-50);  stroke: var(--color-cat-amber-600);  color: var(--color-cat-amber-800);  background-color: var(--color-cat-amber-50);  border-color: var(--color-cat-amber-600); }
+.c-red    { fill: var(--color-cat-red-50);    stroke: var(--color-cat-red-600);    color: var(--color-cat-red-800);    background-color: var(--color-cat-red-50);    border-color: var(--color-cat-red-600); }
+.c-purple { fill: var(--color-cat-purple-50); stroke: var(--color-cat-purple-600); color: var(--color-cat-purple-800); background-color: var(--color-cat-purple-50); border-color: var(--color-cat-purple-600); }
+.c-teal   { fill: var(--color-cat-teal-50);   stroke: var(--color-cat-teal-600);   color: var(--color-cat-teal-800);   background-color: var(--color-cat-teal-50);   border-color: var(--color-cat-teal-600); }
+.c-coral  { fill: var(--color-cat-coral-50);  stroke: var(--color-cat-coral-600);  color: var(--color-cat-coral-800);  background-color: var(--color-cat-coral-50);  border-color: var(--color-cat-coral-600); }
+.c-pink   { fill: var(--color-cat-pink-50);   stroke: var(--color-cat-pink-600);   color: var(--color-cat-pink-800);   background-color: var(--color-cat-pink-50);   border-color: var(--color-cat-pink-600); }
+.c-gray   { fill: var(--color-cat-gray-50);   stroke: var(--color-cat-gray-600);   color: var(--color-cat-gray-800);   background-color: var(--color-cat-gray-50);   border-color: var(--color-cat-gray-600); }
+.c-blue text, .c-green text, .c-amber text, .c-red text,
+.c-purple text, .c-teal text, .c-coral text, .c-pink text, .c-gray text { fill: currentColor; stroke: none; }
+@media (prefers-color-scheme: dark) {
+  :root {
+  --color-brand-primary: #E8E9EA;
+  --color-brand-secondary: #4a9eff;
+  --color-bg-page: #1A1B1C;
+  --color-bg-surface: #232425;
+  --color-bg-subtle: #2A2B2C;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #B8BBBF;
+  --color-text-tertiary: #868B92;
+  --color-text-disabled: #4A4C4F;
+  --color-text-link: #8bb8ff;
+  --color-text-on-brand: #1A1B1C;
+  --color-border-default: #3A3B3C;
+  --color-border-strong: #4A4C4F;
+  --color-border-subtle: #2E2F30;
+  --color-border-brand: #4a9eff;
+  --color-border-error: #f87171;
+  --color-border-success: #34d399;
+  }
+  .c-blue { fill: var(--color-cat-blue-800); stroke: var(--color-cat-blue-200); color: var(--color-cat-blue-100); background-color: var(--color-cat-blue-800); border-color: var(--color-cat-blue-200); }
+  .c-green { fill: var(--color-cat-green-800); stroke: var(--color-cat-green-200); color: var(--color-cat-green-100); background-color: var(--color-cat-green-800); border-color: var(--color-cat-green-200); }
+  .c-amber { fill: var(--color-cat-amber-800); stroke: var(--color-cat-amber-200); color: var(--color-cat-amber-100); background-color: var(--color-cat-amber-800); border-color: var(--color-cat-amber-200); }
+  .c-red { fill: var(--color-cat-red-800); stroke: var(--color-cat-red-200); color: var(--color-cat-red-100); background-color: var(--color-cat-red-800); border-color: var(--color-cat-red-200); }
+  .c-purple { fill: var(--color-cat-purple-800); stroke: var(--color-cat-purple-200); color: var(--color-cat-purple-100); background-color: var(--color-cat-purple-800); border-color: var(--color-cat-purple-200); }
+  .c-teal { fill: var(--color-cat-teal-800); stroke: var(--color-cat-teal-200); color: var(--color-cat-teal-100); background-color: var(--color-cat-teal-800); border-color: var(--color-cat-teal-200); }
+  .c-coral { fill: var(--color-cat-coral-800); stroke: var(--color-cat-coral-200); color: var(--color-cat-coral-100); background-color: var(--color-cat-coral-800); border-color: var(--color-cat-coral-200); }
+  .c-pink { fill: var(--color-cat-pink-800); stroke: var(--color-cat-pink-200); color: var(--color-cat-pink-100); background-color: var(--color-cat-pink-800); border-color: var(--color-cat-pink-200); }
+  .c-gray { fill: var(--color-cat-gray-800); stroke: var(--color-cat-gray-200); color: var(--color-cat-gray-100); background-color: var(--color-cat-gray-800); border-color: var(--color-cat-gray-200); }
+}
+html[data-theme="dark"] {
+  --color-brand-primary: #E8E9EA;
+  --color-brand-secondary: #4a9eff;
+  --color-bg-page: #1A1B1C;
+  --color-bg-surface: #232425;
+  --color-bg-subtle: #2A2B2C;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #B8BBBF;
+  --color-text-tertiary: #868B92;
+  --color-text-disabled: #4A4C4F;
+  --color-text-link: #8bb8ff;
+  --color-text-on-brand: #1A1B1C;
+  --color-border-default: #3A3B3C;
+  --color-border-strong: #4A4C4F;
+  --color-border-subtle: #2E2F30;
+  --color-border-brand: #4a9eff;
+  --color-border-error: #f87171;
+  --color-border-success: #34d399;
+}
+html[data-theme="dark"] .c-blue { fill: var(--color-cat-blue-800); stroke: var(--color-cat-blue-200); color: var(--color-cat-blue-100); background-color: var(--color-cat-blue-800); border-color: var(--color-cat-blue-200); }
+html[data-theme="dark"] .c-green { fill: var(--color-cat-green-800); stroke: var(--color-cat-green-200); color: var(--color-cat-green-100); background-color: var(--color-cat-green-800); border-color: var(--color-cat-green-200); }
+html[data-theme="dark"] .c-amber { fill: var(--color-cat-amber-800); stroke: var(--color-cat-amber-200); color: var(--color-cat-amber-100); background-color: var(--color-cat-amber-800); border-color: var(--color-cat-amber-200); }
+html[data-theme="dark"] .c-red { fill: var(--color-cat-red-800); stroke: var(--color-cat-red-200); color: var(--color-cat-red-100); background-color: var(--color-cat-red-800); border-color: var(--color-cat-red-200); }
+html[data-theme="dark"] .c-purple { fill: var(--color-cat-purple-800); stroke: var(--color-cat-purple-200); color: var(--color-cat-purple-100); background-color: var(--color-cat-purple-800); border-color: var(--color-cat-purple-200); }
+html[data-theme="dark"] .c-teal { fill: var(--color-cat-teal-800); stroke: var(--color-cat-teal-200); color: var(--color-cat-teal-100); background-color: var(--color-cat-teal-800); border-color: var(--color-cat-teal-200); }
+html[data-theme="dark"] .c-coral { fill: var(--color-cat-coral-800); stroke: var(--color-cat-coral-200); color: var(--color-cat-coral-100); background-color: var(--color-cat-coral-800); border-color: var(--color-cat-coral-200); }
+html[data-theme="dark"] .c-pink { fill: var(--color-cat-pink-800); stroke: var(--color-cat-pink-200); color: var(--color-cat-pink-100); background-color: var(--color-cat-pink-800); border-color: var(--color-cat-pink-200); }
+html[data-theme="dark"] .c-gray { fill: var(--color-cat-gray-800); stroke: var(--color-cat-gray-200); color: var(--color-cat-gray-100); background-color: var(--color-cat-gray-800); border-color: var(--color-cat-gray-200); }
+:root { color-scheme: light; }
+html, body { margin: 0; padding: 0; background: transparent !important; box-sizing: border-box;
+             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans KR', system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'; }
+*, *::before, *::after { box-sizing: inherit; }
+svg, svg text, svg tspan { font-family: inherit; }
+</style>
+<script>
+function sendPrompt(text) {
+  window.parent.postMessage(
+    { type: 'genspark_visualize_send_prompt', text: String(text) }, '*'
+  );
+}
+function _reportHeight() {
+  var h = Math.max(
+    document.body ? document.body.scrollHeight : 0,
+    document.documentElement ? document.documentElement.scrollHeight : 0,
+    100
+  );
+  window.parent.postMessage({ type: 'genspark_visualize_height', height: h }, '*');
+}
+window.addEventListener('load', function() {
+  _reportHeight();
+  if (window.ResizeObserver) {
+    new ResizeObserver(_reportHeight).observe(document.body);
+  }
+});
+window.addEventListener('resize', _reportHeight);
+
+// ── PNG export (rasterize the rendered widget inside the iframe) ─────────────
+// Runs here because sandbox="allow-scripts" (no allow-same-origin) makes the
+// iframe DOM unreachable from the parent. Clone <body>, swap each <canvas>
+// (Chart.js) for a snapshot <img>, inline the document styles with dark-scheme
+// rules stripped for a deterministic light export, wrap in <svg><foreignObject>,
+// and rasterize via a data: URL (a Blob URL would taint the canvas in Chromium).
+function _gsExportFont() { return "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans KR', system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'"; }
+function _gsCollectStyles() {
+  var out = '';
+  var s = document.querySelectorAll('style');
+  for (var i = 0; i < s.length; i++) { out += (s[i].textContent || '') + '\n'; }
+  return out;
+}
+function _gsStripDarkMedia(css) {
+  var marker = '@media (prefers-color-scheme: dark)';
+  var idx = css.indexOf(marker);
+  while (idx !== -1) {
+    var brace = css.indexOf('{', idx);
+    if (brace === -1) { css = css.slice(0, idx); break; }
+    var depth = 1, j = brace + 1;
+    while (j < css.length && depth > 0) {
+      var ch = css.charAt(j);
+      if (ch === '{') depth++; else if (ch === '}') depth--;
+      j++;
+    }
+    css = css.slice(0, idx) + css.slice(j);
+    idx = css.indexOf(marker);
+  }
+  return css;
+}
+function _gsCleanup(node) {
+  var scripts = node.querySelectorAll('script');
+  for (var i = 0; i < scripts.length; i++) {
+    if (scripts[i].parentNode) scripts[i].parentNode.removeChild(scripts[i]);
+  }
+  var nameRe = /^[A-Za-z_:][A-Za-z0-9_:.-]*$/;
+  var els = node.querySelectorAll('*');
+  for (var k = 0; k < els.length; k++) {
+    var attrs = els[k].attributes;
+    for (var a = attrs.length - 1; a >= 0; a--) {
+      if (!nameRe.test(attrs[a].name)) els[k].removeAttribute(attrs[a].name);
+    }
+  }
+}
+function _gsSubstituteCanvases(live, clone) {
+  var lc = live.querySelectorAll('canvas');
+  var cc = clone.querySelectorAll('canvas');
+  for (var i = 0; i < lc.length && i < cc.length; i++) {
+    var data = lc[i].toDataURL('image/png');
+    var img = document.createElement('img');
+    img.setAttribute('src', data);
+    img.setAttribute('style', (cc[i].getAttribute('style') || '') +
+      ';width:' + lc[i].offsetWidth + 'px;height:' + lc[i].offsetHeight + 'px');
+    if (cc[i].parentNode) cc[i].parentNode.replaceChild(img, cc[i]);
+  }
+}
+function _gsPostPng(id, dataUrl, error) {
+  window.parent.postMessage(
+    { type: 'genspark_visualize_png', id: id, dataUrl: dataUrl || null, error: error || null },
+    '*'
+  );
+}
+function _gsRasterize(id, scale) {
+  try {
+    scale = scale || 2;
+    var PAD = 16;  // breathing room so content never sits flush against the edge
+    var W = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth, 1);
+    var H = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, 1);
+    var bodyClone = document.body.cloneNode(true);
+    _gsSubstituteCanvases(document.body, bodyClone);
+    _gsCleanup(bodyClone);
+    var wrapper = document.createElement('div');
+    wrapper.setAttribute('style',
+      'font-family:' + _gsExportFont() + ';box-sizing:border-box;width:' + W + 'px');
+    while (bodyClone.firstChild) { wrapper.appendChild(bodyClone.firstChild); }
+    var inner = new XMLSerializer().serializeToString(wrapper);
+    var styleTag = '<style>' + _gsStripDarkMedia(_gsCollectStyles()) +
+      ' svg, svg text, svg tspan { font-family:' + _gsExportFont() + '; }</style>';
+    var CW = W + PAD * 2, CH = H + PAD * 2;
+    var SW = Math.round(CW * scale), SH = Math.round(CH * scale);
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + SW +
+      '" height="' + SH + '" viewBox="0 0 ' + CW + ' ' + CH + '">' +
+      '<foreignObject x="' + PAD + '" y="' + PAD + '" width="' + W + '" height="' + H + '">' +
+      '<div xmlns="http://www.w3.org/1999/xhtml">' + styleTag + inner + '</div>' +
+      '</foreignObject></svg>';
+    var img = new Image();
+    img.onload = function() {
+      try {
+        var cv = document.createElement('canvas');
+        cv.width = SW; cv.height = SH;
+        var ctx = cv.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, SW, SH);
+        ctx.drawImage(img, 0, 0);
+        _gsPostPng(id, cv.toDataURL('image/png'), null);
+      } catch (e) { _gsPostPng(id, null, 'tainted'); }
+    };
+    img.onerror = function() { _gsPostPng(id, null, 'image_error'); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  } catch (e) {
+    _gsPostPng(id, null,
+      (e && e.name === 'SecurityError') ? 'tainted' : String((e && e.message) || e));
+  }
+}
+window.addEventListener('message', function(ev) {
+  var d = ev.data || {};
+  if (!d || d.type !== 'genspark_visualize_request_png') return;
+  var run = function() { _gsRasterize(d.id, d.scale); };
+  if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+    document.fonts.ready.then(function() {
+      if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+      else window.setTimeout(run, 0);
+    });
+  } else if (window.requestAnimationFrame) {
+    window.requestAnimationFrame(run);
+  } else {
+    window.setTimeout(run, 0);
+  }
+});
+</script>
+</head>
+<body><div id="game-wrap">
+<style>
+  #game-wrap { width:100%; max-width:758px; margin:0 auto; font-family:inherit; color:var(--color-text-primary); }
+  #game-wrap * { box-sizing:border-box; }
+  #game-wrap:fullscreen, #game-wrap:-webkit-full-screen {
+    max-width:100vw; width:100vw; height:100vh; display:flex; flex-direction:column;
+    background:#0a0d1a; padding:0; margin:0;
+  }
+  #game-wrap:fullscreen #canvas-holder, #game-wrap:-webkit-full-screen #canvas-holder {
+    flex:1; aspect-ratio:unset; height:auto;
+  }
+  #game-wrap:fullscreen canvas, #game-wrap:-webkit-full-screen canvas {
+    width:100%; height:100%; object-fit:contain;
+  }
+  #hud { display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:8px; padding:12px; background:var(--color-bg-surface); border:1px solid var(--color-border-subtle); border-radius:8px 8px 0 0; font-size:14px; align-items:center; }
+  .hud-cell { display:flex; flex-direction:column; gap:4px; }
+  .hud-label { font-size:12px; color:var(--color-text-secondary); }
+  .hud-value { font-weight:700; font-size:16px; }
+  .bar { height:10px; background:var(--color-bg-subtle); border-radius:6px; overflow:hidden; border:0.5px solid var(--color-border-subtle); }
+  .bar>span { display:block; height:100%; transition:width .25s ease, background .25s ease; }
+  .hud-buttons { display:flex; gap:6px; align-items:center; }
+  .icon-btn { width:36px; height:36px; border:1px solid var(--color-border-default); background:var(--color-bg-subtle); border-radius:8px; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; color:var(--color-text-primary); padding:0; transition:background .15s; }
+  .icon-btn:hover { background:var(--color-brand-primary); color:#fff; }
+  .icon-btn.active { background:var(--color-brand-primary); color:#fff; }
+  #canvas-holder { position:relative; background:#0f1420; border-left:1px solid var(--color-border-subtle); border-right:1px solid var(--color-border-subtle); overflow:hidden; aspect-ratio:758/460; }
+  canvas { display:block; width:100%; height:100%; image-rendering:pixelated; image-rendering:crisp-edges; cursor:pointer; }
+  #overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(10,8,20,0.88); color:#fff; padding:24px; text-align:center; z-index:10; }
+  #overlay .box { max-width:560px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:22px; }
+  #overlay h2 { margin:0 0 12px; font-size:22px; }
+  #overlay p { margin:0 0 14px; font-size:13px; line-height:1.65; color:rgba(255,255,255,0.88); }
+  #overlay button.primary { background:#ff5577; color:#fff; border:none; padding:12px 24px; border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; min-height:44px; min-width:140px; }
+  #overlay button.primary:hover { background:#ff3355; }
+  #kakao { position:absolute; top:12px; right:12px; max-width:250px; background:#fee500; color:#3c1e1e; padding:10px 12px; border-radius:10px 10px 2px 10px; font-size:12px; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.4); z-index:5; opacity:0; transform:translateY(-6px); transition:opacity .3s, transform .3s; pointer-events:none; line-height:1.4; }
+  #kakao.show { opacity:1; transform:translateY(0); }
+  #kakao .name { color:#b03030; font-size:11px; margin-bottom:2px; }
+  #hint { position:absolute; bottom:12px; left:12px; right:12px; background:rgba(0,0,0,0.75); color:#fff; padding:8px 12px; border-radius:6px; font-size:12px; z-index:5; display:none; line-height:1.4; }
+  #hint.show { display:block; }
+  #building-popup { position:absolute; bottom:52px; left:12px; background:rgba(0,0,0,0.85); color:#fff; padding:8px; border-radius:8px; z-index:6; display:none; max-width:220px; border:1px solid rgba(255,255,255,0.2); }
+  #building-popup img { width:100%; height:88px; object-fit:cover; border-radius:4px; display:block; }
+  #building-popup .cap { font-size:11px; margin-top:6px; color:#fff; font-weight:600; }
+  #building-popup .sub { font-size:10px; color:rgba(255,255,255,0.65); margin-top:2px; }
+  #fs-controls { position:absolute; top:12px; left:12px; z-index:7; display:flex; gap:6px; }
+  #controls { display:flex; gap:8px; padding:12px; background:var(--color-bg-surface); border:1px solid var(--color-border-subtle); border-top:none; border-radius:0 0 8px 8px; flex-wrap:wrap; justify-content:space-between; align-items:center; }
+  #controls .info { font-size:12px; color:var(--color-text-secondary); flex:1; min-width:200px; }
+  #mobile-pad { display:none; gap:4px; }
+  @media (max-width:600px) { #mobile-pad { display:grid; grid-template-columns:repeat(3,44px); grid-template-rows:repeat(3,44px); gap:4px; } #controls .info { display:none; } }
+  #mobile-pad button { background:var(--color-bg-subtle); border:1px solid var(--color-border-default); border-radius:6px; font-size:18px; font-weight:700; color:var(--color-text-primary); cursor:pointer; user-select:none; touch-action:manipulation; }
+  #mobile-pad button:active { background:var(--color-brand-primary); color:#fff; }
+  #mobile-pad .empty { visibility:hidden; }
+  .kbd { display:inline-block; padding:2px 6px; background:var(--color-bg-subtle); border:1px solid var(--color-border-default); border-radius:4px; font-size:11px; font-weight:700; margin:0 2px; }
+  .attr { font-size:10px; color:var(--color-text-secondary); margin-top:6px; opacity:0.7; }
+</style>
+
+<div id="hud">
+  <div class="hud-cell">
+    <span class="hud-label">🕒 셔틀 출발까지</span>
+    <span class="hud-value" id="time-val">02:30</span>
+    <div class="bar"><span id="time-bar" style="width:100%;background:var(--color-success);"></span></div>
+  </div>
+  <div class="hud-cell">
+    <span class="hud-label">😡 와이프 분노</span>
+    <span class="hud-value" id="anger-val">0%</span>
+    <div class="bar"><span id="anger-bar" style="width:0%;background:var(--color-error);"></span></div>
+  </div>
+  <div class="hud-cell">
+    <span class="hud-label">🧠 아빠 멘탈</span>
+    <span class="hud-value" id="mp-val">100</span>
+    <div class="bar"><span id="mp-bar" style="width:100%;background:var(--color-brand-secondary);"></span></div>
+  </div>
+  <div class="hud-buttons">
+    <button class="icon-btn active" id="btn-sound" title="사운드 ON/OFF">🔊</button>
+    <button class="icon-btn active" id="btn-music" title="배경음악 ON/OFF">🎵</button>
+    <button class="icon-btn" id="btn-fs" title="전체화면">⛶</button>
+  </div>
+</div>
+
+<div id="canvas-holder">
+  <canvas id="game" width="758" height="460"></canvas>
+  <div id="kakao"><div class="name">👩 와이프</div><span id="kakao-msg"></span></div>
+  <div id="hint"></div>
+  <div id="building-popup"><img id="bp-img" src=""><div class="cap" id="bp-cap"></div><div class="sub" id="bp-sub"></div></div>
+  <div id="overlay">
+    <div class="box">
+      <h2>🗺️ 노원 은행사거리 대작전</h2>
+      <p>
+        <b>실제 OpenStreetMap 데이터</b>로 재현한 노원 중계동 학원가!<br>
+        한글비석로 · 노원로22길 · 덕릉로가 만나는 진짜 은행사거리에서<br>
+        학원 째고 도망친 아들을 <b>2분 30초</b> 안에 잡아라!
+      </p>
+      <p style="font-size:12px;opacity:0.75;">
+        🎯 반짝이는 <b>단서</b>(📝🥤🎒)를 3개 모으면 미니맵에 아들 표시<br>
+        ⚔️ <b>스페이스바</b>를 눌러 선생님을 젤다 스타일로 공격해 기절시킬 수 있음!<br>
+        📚 <b>학원 선생님</b>을 피할 것 (감지 시 플레이어 추격, 마주치면 멘탈 -30)<br>
+        🏢 실제 랜드마크 <b>건영상가·삼부프라자·유경빌딩</b> 근처 클릭하면 실사 사진<br>
+        <span class="kbd">WASD</span>/<span class="kbd">방향키</span> · <span class="kbd">Shift</span> 대쉬 · <span class="kbd">Space</span> 공격 · <span class="kbd">F</span> 전체화면
+      </p>
+      <button class="primary" onclick="startGame()">🚨 출동!</button>
+      <div class="attr">Map data © OpenStreetMap contributors (ODbL)</div>
+    </div>
+  </div>
+</div>
+
+<div id="controls">
+  <div class="info">
+    <span class="kbd">WASD</span>/<span class="kbd">↑↓←→</span> 이동 · <span class="kbd">Shift</span> 대쉬 · <span class="kbd">Space</span> 공격 · <span class="kbd">F</span> 전체화면 · <span class="kbd">M</span> 음소거
+  </div>
+  <div id="mobile-pad">
+    <button class="empty"></button>
+    <button data-dir="up">▲</button>
+    <button data-dir="attack">⚔️</button>
+    <button data-dir="left">◀</button>
+    <button data-dir="dash">⚡</button>
+    <button data-dir="right">▶</button>
+    <button class="empty"></button>
+    <button data-dir="down">▼</button>
+    <button class="empty"></button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ========== EMBEDDED OSM DATA ==========
+  const MAP_DATA_JSON = '{"gs":40,"hw":[{"t":"tertiary","n":"한글비석로8길","p":[[25.3,24.9],[27.0,24.3],[27.7,24.0],[28.6,23.7],[29.1,23.5],[31.0,22.8],[32.4,22.6],[38.2,22.8],[40.9,22.8]]},{"t":"tertiary","n":"노원로20길","p":[[-3.3,39.8],[-2.8,39.6],[-1.2,39.0],[2.4,37.8],[3.8,37.3],[7.2,36.1],[12.3,34.1],[13.1,33.9],[13.7,33.7]]},{"t":"tertiary","n":"노원로22길","p":[[13.8,25.8],[-1.8,25.0],[-5.0,24.8]]},{"t":"tertiary","n":"노원로22길","p":[[13.8,25.8],[16.2,25.9],[18.7,25.9],[20.5,25.9],[21.7,25.9],[22.7,25.8]]},{"t":"tertiary","n":"한글비석로5길","p":[[17.9,44.6],[17.6,44.0],[17.6,43.6],[15.2,37.4],[13.8,34.0],[13.7,33.7]]},{"t":"residential","n":"중계로17길","p":[[32.1,6.8],[32.1,9.2],[30.0,9.2],[29.1,9.3],[28.9,9.9],[28.9,11.1],[28.6,23.7]]},{"t":"residential","n":"중계로19길","p":[[22.7,25.8],[22.7,23.2],[23.1,18.1],[23.1,16.5],[23.1,13.7],[23.1,9.3],[19.7,9.1],[19.8,6.5]]},{"t":"residential","n":"중계로18길","p":[[32.1,6.8],[32.2,6.2],[32.3,4.6],[32.6,-0.7],[32.1,-1.4],[30.1,-2.7]]},{"t":"residential","n":"중계로20길","p":[[19.8,6.5],[19.8,4.3],[23.2,4.4],[24.1,1.6],[24.5,0.9],[25.7,-0.7],[26.0,-1.1],[27.0,-2.5],[28.1,-4.1],[30.1,-2.7]]},{"t":"secondary","n":"덕릉로","p":[[7.5,1.7],[5.4,3.4],[4.3,4.4]]},{"t":"tertiary","n":"한글비석로5길","p":[[13.7,33.7],[13.7,32.2],[13.8,25.8]]},{"t":"tertiary","n":"덕릉로73길","p":[[3.1,-2.9],[5.0,-0.9],[7.5,1.7]]},{"t":"secondary","n":"한글비석로","p":[[24.2,44.5],[24.4,42.1],[24.4,40.9],[24.4,37.6],[24.6,35.6],[24.9,33.9],[25.3,32.4],[26.2,29.9],[27.6,27.5],[28.6,26.2],[28.6,25.7],[29.0,25.0],[29.1,24.6],[29.1,23.5]]},{"t":"secondary","n":"한글비석로","p":[[29.1,23.5],[28.6,23.7],[28.6,20.6],[28.5,19.6],[28.4,17.4],[28.2,15.3],[27.7,11.7],[27.2,7.9],[27.1,6.7],[26.9,5.4],[26.6,3.6],[26.1,1.0],[25.8,-0.4],[25.7,-0.7]]},{"t":"secondary","n":"덕릉로","p":[[4.3,4.4],[4.6,5.0],[7.7,10.2],[8.5,11.2]]},{"t":"residential","n":"","p":[[26.0,-1.1],[23.7,-2.8],[23.4,-2.3],[25.7,-0.7]]},{"t":"tertiary","n":"덕릉로73길","p":[[8.5,11.2],[9.0,11.3],[9.4,11.3],[9.7,11.3],[13.9,11.2],[18.1,11.2],[19.8,11.1],[23.1,11.1],[27.6,11.2],[27.7,11.7]]},{"t":"tertiary","n":"","p":[[27.6,11.2],[27.6,10.4],[28.3,10.4],[28.9,10.4],[28.9,11.1]]}],"bd":[{"n":"","a":9.1,"p":[[26.4,20.3],[26.4,23.1],[25.3,23.1],[25.3,20.3],[26.4,20.3]]},{"n":"","a":8.9,"p":[[13.7,20.5],[14.2,20.5],[14.2,20.9],[15.2,20.9],[15.2,22.9],[13.7,22.9],[13.7,20.5]]},{"n":"","a":6.0,"p":[[19.6,32.9],[19.6,34.9],[18.4,34.9],[18.4,32.9],[19.6,32.9]]},{"n":"","a":5.0,"p":[[15.4,36.9],[15.4,38.5],[14.3,38.5],[14.3,36.9],[15.4,36.9]]},{"n":"유경빌딩","a":4.2,"p":[[26.5,20.3],[27.4,20.3],[27.4,20.7],[28.1,20.7],[28.1,20.4],[28.5,20.4],[28.5,20.7],[27.4,20.7],[27.4,21.4],[26.5,21.4],[26.5,20.3]]},{"n":"삼부프라자","a":4.0,"p":[[26.5,15.0],[27.6,15.0],[27.6,15.7],[28.1,15.7],[28.1,16.7],[26.5,16.7],[26.5,15.0]]},{"n":"건영상가","a":4.0,"p":[[14.9,22.7],[16.2,22.7],[16.2,24.4],[14.9,24.4],[14.9,22.7]]},{"n":"덕암관","a":3.3,"p":[[13.0,36.7],[14.2,36.7],[14.2,38.0],[13.0,38.0],[13.0,36.7]]},{"n":"304","a":3.0,"p":[[7.2,16.1],[7.5,16.1],[7.5,15.7],[8.1,15.7],[8.1,17.4],[7.2,17.4],[7.2,16.1]]},{"n":"102","a":2.9,"p":[[36.8,12.0],[37.6,12.0],[37.6,12.6],[38.7,12.6],[38.7,11.9],[37.6,11.9],[37.6,11.4],[36.8,11.4],[36.8,12.0]]},{"n":"101","a":2.9,"p":[[9.5,33.1],[10.4,33.1],[10.4,34.0],[9.5,34.0],[9.5,33.1]]},{"n":"302","a":2.9,"p":[[7.2,19.0],[8.1,19.0],[8.1,19.9],[7.2,19.9],[7.2,19.0]]},{"n":"305","a":2.8,"p":[[11.0,16.5],[12.0,16.5],[12.0,17.4],[11.0,17.4],[11.0,16.5]]},{"n":"105","a":2.8,"p":[[19.1,14.0],[20.1,14.0],[20.1,15.0],[19.1,15.0],[19.1,14.0]]},{"n":"102","a":2.6,"p":[[8.4,30.4],[9.4,30.4],[9.4,31.3],[8.4,31.3],[8.4,30.4]]},{"n":"108","a":2.6,"p":[[3.7,32.1],[4.6,32.1],[4.6,33.0],[3.7,33.0],[3.7,32.1]]},{"n":"두타빌 B동","a":2.5,"p":[[23.4,11.5],[24.4,11.5],[24.4,12.4],[23.4,12.4],[23.4,11.5]]},{"n":"103","a":2.4,"p":[[37.2,14.6],[38.1,14.6],[38.1,15.5],[37.2,15.5],[37.2,14.6]]},{"n":"109","a":2.4,"p":[[4.8,35.1],[5.7,35.1],[5.7,36.0],[4.8,36.0],[4.8,35.1]]},{"n":"109","a":2.3,"p":[[6.0,13.3],[6.9,13.3],[6.9,14.2],[6.0,14.2],[6.0,13.3]]},{"n":"107","a":2.3,"p":[[10.3,13.6],[11.2,13.6],[11.2,14.5],[10.3,14.5],[10.3,13.6]]},{"n":"106","a":2.3,"p":[[14.7,13.8],[15.6,13.8],[15.6,14.8],[14.7,14.8],[14.7,13.8]]},{"n":"101","a":2.3,"p":[[10.6,9.8],[11.5,9.8],[11.5,10.8],[10.6,10.8],[10.6,9.8]]},{"n":"1003","a":2.3,"p":[[6.0,21.3],[6.9,21.3],[6.9,22.2],[6.0,22.2],[6.0,21.3]]},{"n":"1002","a":2.3,"p":[[10.3,21.6],[11.2,21.6],[11.2,22.5],[10.3,22.5],[10.3,21.6]]},{"n":"1001","a":2.3,"p":[[10.3,24.0],[11.2,24.0],[11.2,24.9],[10.3,24.9],[10.3,24.0]]},{"n":"307","a":2.2,"p":[[19.0,17.6],[19.9,17.6],[19.9,18.5],[19.0,18.5],[19.0,17.6]]},{"n":"두타빌 A동","a":2.1,"p":[[23.4,14.5],[24.4,14.5],[24.4,15.4],[23.4,15.4],[23.4,14.5]]},{"n":"301","a":2.1,"p":[[11.5,19.1],[12.4,19.1],[12.4,20.0],[11.5,20.0],[11.5,19.1]]},{"n":"602","a":2.0,"p":[[29.9,17.4],[30.8,17.4],[30.8,18.3],[29.9,18.3],[29.9,17.4]]},{"n":"604","a":2.0,"p":[[37.4,18.9],[38.3,18.9],[38.3,19.8],[37.4,19.8],[37.4,18.9]]},{"n":"306","a":2.0,"p":[[15.2,17.3],[16.1,17.3],[16.1,18.2],[15.2,18.2],[15.2,17.3]]},{"n":"312","a":2.0,"p":[[18.5,24.4],[19.4,24.4],[19.4,25.3],[18.5,25.3],[18.5,24.4]]},{"n":"103","a":2.0,"p":[[19.3,10.2],[20.2,10.2],[20.2,11.1],[19.3,11.1],[19.3,10.2]]},{"n":"601","a":1.9,"p":[[31.1,20.6],[32.0,20.6],[32.0,21.5],[31.1,21.5],[31.1,20.6]]},{"n":"108","a":1.9,"p":[[32.9,14.4],[33.8,14.4],[33.8,15.3],[32.9,15.3],[32.9,14.4]]},{"n":"309","a":1.9,"p":[[18.1,20.9],[19.0,20.9],[19.0,21.8],[18.1,21.8],[18.1,20.9]]},{"n":"102","a":1.9,"p":[[15.0,10.2],[15.9,10.2],[15.9,11.1],[15.0,11.1],[15.0,10.2]]},{"n":"803","a":1.9,"p":[[20.3,35.8],[21.2,35.8],[21.2,36.7],[20.3,36.7],[20.3,35.8]]},{"n":"801","a":1.9,"p":[[16.7,32.7],[17.6,32.7],[17.6,33.6],[16.7,33.6],[16.7,32.7]]},{"n":"806","a":1.9,"p":[[16.6,29.8],[17.5,29.8],[17.5,30.7],[16.6,30.7],[16.6,29.8]]},{"n":"804","a":1.9,"p":[[22.9,33.4],[23.8,33.4],[23.8,34.3],[22.9,34.3],[22.9,33.4]]},{"n":"603","a":1.8,"p":[[33.4,17.6],[34.3,17.6],[34.3,18.5],[33.4,18.5],[33.4,17.6]]},{"n":"802","a":1.8,"p":[[16.4,35.6],[17.3,35.6],[17.3,36.5],[16.4,36.5],[16.4,35.6]]},{"n":"805","a":1.8,"p":[[20.7,31.3],[21.6,31.3],[21.6,32.2],[20.7,32.2],[20.7,31.3]]},{"n":"106동","a":1.7,"p":[[29.1,11.4],[30.0,11.4],[30.0,12.3],[29.1,12.3],[29.1,11.4]]},{"n":"105","a":1.7,"p":[[31.4,10.1],[32.3,10.1],[32.3,11.0],[31.4,11.0],[31.4,10.1]]},{"n":"311","a":1.7,"p":[[20.9,22.5],[21.8,22.5],[21.8,23.4],[20.9,23.4],[20.9,22.5]]},{"n":"108","a":1.7,"p":[[8.2,11.0],[9.1,11.0],[9.1,12.0],[8.2,12.0],[8.2,11.0]]},{"n":"107","a":1.6,"p":[[29.7,14.2],[30.6,14.2],[30.6,15.1],[29.7,15.1],[29.7,14.2]]},{"n":"103","a":1.6,"p":[[8.0,27.4],[8.9,27.4],[8.9,28.3],[8.0,28.3],[8.0,27.4]]},{"n":"105","a":1.6,"p":[[4.8,27.1],[5.7,27.1],[5.7,28.0],[4.8,28.0],[4.8,27.1]]},{"n":"308","a":1.6,"p":[[20.9,19.3],[21.8,19.3],[21.8,20.2],[20.9,20.2],[20.9,19.3]]},{"n":"701","a":1.6,"p":[[39.3,23.8],[40.2,23.8],[40.2,24.7],[39.3,24.7],[39.3,23.8]]},{"n":"아파트 상가","a":1.6,"p":[[16.8,-0.4],[17.7,-0.4],[17.7,0.5],[16.8,0.5],[16.8,-0.4]]},{"n":"705","a":1.5,"p":[[37.7,26.7],[38.6,26.7],[38.6,27.6],[37.7,27.6],[37.7,26.7]]},{"n":"I JIN Building","a":1.5,"p":[[23.2,23.4],[24.1,23.4],[24.1,24.3],[23.2,24.3],[23.2,23.4]]},{"n":"서울제일교회","a":1.3,"p":[[28.7,21.1],[29.6,21.1],[29.6,22.0],[28.7,22.0],[28.7,21.1]]}]}';
+  const MAP = JSON.parse(MAP_DATA_JSON);
+
+  const LANDMARKS = {
+    '건영상가':      {role:'english',   emoji:'🇬🇧', label:'건영상가 (영어학원 밀집)', desc:'실제 K-eight/토피아 등 영어학원 위치. 아들의 1순위 째기 대상.', imgIdx:1},
+    '삼부프라자':    {role:'math',      emoji:'📐', label:'삼부프라자 (수학학원)',      desc:'중계동 수학학원 클러스터. 원장 선생님 조심!', imgIdx:2},
+    '유경빌딩':      {role:'academy',   emoji:'📚', label:'유경빌딩 (종합 학원가)',      desc:'짱솔·논술 등 다양한 학원 밀집. 아들 흔적 남기 좋음.', imgIdx:3},
+    '덕암관':        {role:'shuttle',   emoji:'🚌', label:'덕암관 (셔틀 정류장)',        desc:'학원 셔틀버스 정류장. 여기서 놓치면 게임 오버.', imgIdx:4},
+    '두타빌 A동':    {role:'cafe',      emoji:'☕', label:'두타빌 A동 (스터디카페)',    desc:'아이들이 자주 도망치는 은신처.', imgIdx:5},
+    '두타빌 B동':    {role:'snack',     emoji:'🍢', label:'두타빌 B동 (분식집 골목)',    desc:'떡볶이·마라탕 자리. 여동생 매수용.', imgIdx:6},
+    '아파트 상가':   {role:'cvs',       emoji:'🏪', label:'아파트 상가 (편의점)',        desc:'아들 삼각김밥 결제 흔적.', imgIdx:0},
+    'I JIN Building':{role:'pc',        emoji:'🎮', label:'I JIN Building (PC방 층)',   desc:'아들의 최애 은신처. 롤 한 판만...', imgIdx:1},
+    '서울제일교회':  {role:'church',    emoji:'⛪', label:'서울제일교회',                 desc:'실제 랜드마크. 세이브 포인트.', imgIdx:2}
+  };
+
+  const REAL_IMAGES = [
+    'https://sspark.genspark.ai/cfimages?u1=w0UjWd9LtQ25KY6hweAB98v0j3CUJ2eNYHDfxd220pLstFMSuD0cdfYFkK61qf%2FPN%2Bxm4sLpAEhP1Iy3YpAItsNi%2BI5o19nLqTEF%2Bavyop%2FWw%3D&u2=jr3a59%2BxZAzsDkN8&width=2560',
+    'https://sspark.genspark.ai/cfimages?u1=KcNMg%2FFij6UuDqhmw%2Ftw8BuQje5BUh4VBsLpicCz3M0kuAzCI9RT0C8rINR9kpEl1u2p2zsrpLFy4VlHEMsvQ9ptaBxQRbBfmnGZGLBPFj2ENjeRhubXbonB4S9b4sycYfS6M08ls7Lj5qcgv4x3ZqNL2nD8vgn%2FJe2hNmw2H8dG&u2=uw79NwhlHRJt2yd1&width=2560',
+    'https://sspark.genspark.ai/cfimages?u1=rk%2B8gLX8acGjXTGKVi%2BXhfcXNk0ufJUGbNeMTV7eqbiGuWvkk0we7HfI23NCRED%2BjQ6PnyyJPU61hHXe2Y6ZSj%2B8KAwRpeqBxyRaD2YcPEON0G9hH81Nncl3f0%2FgnDp%2FKw%3D%3D&u2=%2FoHa5QGjj4stu%2Fq4&width=2560',
+    'https://sspark.genspark.ai/cfimages?u1=1t4g2L%2BnYYXqOzyor%2B84XA02myHH%2F66zf16NhDLYKV%2F%2FuWMG9iXoXqR1wuHHvca02woIvQUo%2FekyuxJM2S9rLdQsYYYkBJCcrlqIHDeaqLU%3D&u2=zPeh9ToghPA%2FUEUd&width=2560',
+    'https://sspark.genspark.ai/cfimages?u1=fj9xL9gpaGM%2BY3Y%2F1UF2NG2rzxO6m2mcrQXjJrtazFN8b5CIhf3v472DYOXiUWWRJPUY4P%2BR6p9%2FGub8E4y66xUSN9%2F2CVcWZDN9xWnu4ACJLCD%2B8A%3D%3D&u2=%2BzmAIZotixhciYyo&width=2560',
+    'https://sspark.genspark.ai/cfimages?u1=gymuZFkq3VSKxS64KnGsX9LLg8ov%2ByN6ggg8UIZ3hnXLvrtR%2FLx0nHylJ972UggPe1OsZEU43wGKdBy2pR2Vu7VXMklycKyrBcfobKCg4w%3D%3D&u2=OuJuceluLpk9pAJ3&width=2560',
+    'https://sspark.genspark.ai/cfimages?u1=lDTBOJ%2B%2F3RsqEDCascTON5VyjsvM6FzdsVfoFq5BbVtwlRIL6DvBuyhn9Unm1Nz2%2BlxqGC4U8C05wSKApeDyFDYviTClFfNWgmiOY4wV%2FcuXBHtI3scZxI22P6YNfuU%3D&u2=A9MuWCdq3WnsfFTo&width=2560'
+  ];
+
+  // ========== AUDIO SYSTEM (Web Audio API - synthesized 8bit sounds) ==========
+  const audio = {
+    ctx: null, master: null, musicGain: null, sfxGain: null,
+    enabled: true, musicEnabled: true,
+    musicPlaying: false, musicNodes: [], musicStep: 0, musicTimer: 0,
+    tempo: 130 // BPM, increases with anger
+  };
+
+  function initAudio(){
+    if(audio.ctx) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      audio.ctx = new AC();
+      audio.master = audio.ctx.createGain();
+      audio.master.gain.value = 0.6;
+      audio.master.connect(audio.ctx.destination);
+      audio.musicGain = audio.ctx.createGain();
+      audio.musicGain.gain.value = 0.35;
+      audio.musicGain.connect(audio.master);
+      audio.sfxGain = audio.ctx.createGain();
+      audio.sfxGain.gain.value = 0.7;
+      audio.sfxGain.connect(audio.master);
+    } catch(e){ console.warn('Audio init failed', e); }
+  }
+
+  // Play a single blip note
+  function playTone(freq, dur, type='square', vol=0.3, attack=0.005, dest=null){
+    if(!audio.ctx || !audio.enabled) return;
+    const t = audio.ctx.currentTime;
+    const osc = audio.ctx.createOscillator();
+    const gain = audio.ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(vol, t+attack);
+    gain.gain.exponentialRampToValueAtTime(0.001, t+dur);
+    osc.connect(gain);
+    gain.connect(dest || audio.sfxGain);
+    osc.start(t);
+    osc.stop(t+dur+0.02);
+  }
+
+  // Play a note with pitch bend (for jumps/dashes)
+  function playSweep(f1, f2, dur, type='square', vol=0.3){
+    if(!audio.ctx || !audio.enabled) return;
+    const t = audio.ctx.currentTime;
+    const osc = audio.ctx.createOscillator();
+    const gain = audio.ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(f1, t);
+    osc.frequency.exponentialRampToValueAtTime(f2, t+dur);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(vol, t+0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, t+dur);
+    osc.connect(gain);
+    gain.connect(audio.sfxGain);
+    osc.start(t);
+    osc.stop(t+dur+0.02);
+  }
+
+  // Noise burst for footsteps/hits
+  function playNoise(dur, vol=0.15, filterFreq=1000){
+    if(!audio.ctx || !audio.enabled) return;
+    const t = audio.ctx.currentTime;
+    const buffer = audio.ctx.createBuffer(1, audio.ctx.sampleRate * dur, audio.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for(let i=0;i<data.length;i++) data[i] = (Math.random()*2-1) * (1 - i/data.length);
+    const src = audio.ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = audio.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = filterFreq;
+    const gain = audio.ctx.createGain();
+    gain.gain.value = vol;
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(audio.sfxGain);
+    src.start(t);
+  }
+
+  // Sound effects catalog
+  const SFX = {
+    step: () => playNoise(0.05, 0.08, 2000),
+    dash: () => playSweep(220, 660, 0.18, 'sawtooth', 0.25),
+    clue: () => {
+      playTone(660, 0.08, 'square', 0.25);
+      setTimeout(()=>playTone(880, 0.08, 'square', 0.25), 80);
+      setTimeout(()=>playTone(1320, 0.15, 'square', 0.25), 160);
+    },
+    kakao: () => {
+      playTone(1200, 0.06, 'sine', 0.35);
+      setTimeout(()=>playTone(900, 0.1, 'sine', 0.35), 60);
+    },
+    teacher: () => {
+      playTone(180, 0.15, 'sawtooth', 0.35);
+      setTimeout(()=>playTone(140, 0.2, 'sawtooth', 0.35), 100);
+    },
+    catch: () => {
+      // Victory jingle
+      const notes = [523, 659, 784, 1047];
+      notes.forEach((n,i)=>setTimeout(()=>playTone(n, 0.18, 'square', 0.35), i*120));
+    },
+    gameover: () => {
+      const notes = [440, 349, 293, 220];
+      notes.forEach((n,i)=>setTimeout(()=>playTone(n, 0.25, 'triangle', 0.35), i*180));
+    },
+    start: () => {
+      playSweep(220, 880, 0.3, 'square', 0.3);
+    },
+    talk: () => {
+      playTone(600, 0.06, 'triangle', 0.25);
+      setTimeout(()=>playTone(750, 0.06, 'triangle', 0.25), 70);
+    },
+    click: () => playTone(1500, 0.03, 'square', 0.2),
+    attack: () => {
+      playSweep(500, 150, 0.12, 'sawtooth', 0.25);
+      playSweep(300, 700, 0.08, 'triangle', 0.15);
+    },
+    hit: () => {
+      playNoise(0.08, 0.4, 400);
+      playTone(180, 0.08, 'sawtooth', 0.4);
+    }
+  };
+
+  // ========== BACKGROUND MUSIC (8bit style, adaptive tempo) ==========
+  // Simple chase-theme melody in C minor
+  const MELODY = [
+    // [note, duration in 16ths]
+    ['C4',2],['Eb4',2],['G4',2],['C5',2],
+    ['G4',2],['Eb4',2],['C4',2],['D4',2],
+    ['Eb4',2],['G4',2],['Bb4',2],['Eb5',2],
+    ['Bb4',2],['G4',2],['Eb4',2],['C4',2],
+    ['F4',2],['Ab4',2],['C5',2],['F5',2],
+    ['C5',2],['Ab4',2],['F4',2],['G4',2],
+    ['G4',2],['Bb4',2],['D5',2],['G5',2],
+    ['D5',2],['Bb4',2],['G4',2],['B4',2],
+  ];
+  const BASS = [
+    ['C2',8],['G2',8],['Eb2',8],['F2',8],
+    ['F2',8],['C2',8],['G2',8],['G2',8],
+  ];
+  const NOTE_FREQ = {
+    'C2':65.41,'D2':73.42,'Eb2':77.78,'F2':87.31,'G2':98,'Ab2':103.83,'Bb2':116.54,'B2':123.47,
+    'C3':130.81,'D3':146.83,'Eb3':155.56,'F3':174.61,'G3':196,'Ab3':207.65,'Bb3':233.08,'B3':246.94,
+    'C4':261.63,'D4':293.66,'Eb4':311.13,'F4':349.23,'G4':392,'Ab4':415.3,'Bb4':466.16,'B4':493.88,
+    'C5':523.25,'D5':587.33,'Eb5':622.25,'F5':698.46,'G5':783.99,'Ab5':830.61,'Bb5':932.33,'B5':987.77
+  };
+
+  let melodyStep = 0, bassStep = 0, musicTimer = 0;
+  function updateMusic(dt){
+    if(!audio.ctx || !audio.enabled || !audio.musicEnabled) return;
+    // Tempo scales with anger 130 → 200 BPM
+    const bpm = 130 + state.anger * 0.7;
+    const step16 = 60 / bpm / 4; // duration of a 16th note
+    musicTimer += dt;
+    if(musicTimer >= step16){
+      musicTimer -= step16;
+      // Play melody note
+      const [note, dur] = MELODY[melodyStep % MELODY.length];
+      const freq = NOTE_FREQ[note] || 440;
+      const t = audio.ctx.currentTime;
+      const osc = audio.ctx.createOscillator();
+      const gain = audio.ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = freq;
+      const noteLen = step16 * dur * 0.85;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.15, t+0.008);
+      gain.gain.exponentialRampToValueAtTime(0.001, t+noteLen);
+      osc.connect(gain);
+      gain.connect(audio.musicGain);
+      osc.start(t);
+      osc.stop(t+noteLen+0.02);
+      melodyStep++;
+
+      // Bass every 8 sixteenths
+      if(melodyStep % 8 === 1){
+        const [bnote, bdur] = BASS[bassStep % BASS.length];
+        const bfreq = NOTE_FREQ[bnote] || 130;
+        const bosc = audio.ctx.createOscillator();
+        const bgain = audio.ctx.createGain();
+        bosc.type = 'triangle';
+        bosc.frequency.value = bfreq;
+        const blen = step16 * bdur * 0.9;
+        bgain.gain.setValueAtTime(0, t);
+        bgain.gain.linearRampToValueAtTime(0.28, t+0.01);
+        bgain.gain.exponentialRampToValueAtTime(0.001, t+blen);
+        bosc.connect(bgain);
+        bgain.connect(audio.musicGain);
+        bosc.start(t);
+        bosc.stop(t+blen+0.02);
+        bassStep++;
+      }
+
+      // Simple hi-hat noise every step
+      if(melodyStep % 2 === 0){
+        const buffer = audio.ctx.createBuffer(1, audio.ctx.sampleRate * 0.03, audio.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for(let i=0;i<data.length;i++) data[i] = (Math.random()*2-1) * (1-i/data.length) * 0.5;
+        const src = audio.ctx.createBufferSource();
+        src.buffer = buffer;
+        const hf = audio.ctx.createBiquadFilter();
+        hf.type='highpass'; hf.frequency.value=6000;
+        const hg = audio.ctx.createGain();
+        hg.gain.value = 0.08;
+        src.connect(hf); hf.connect(hg); hg.connect(audio.musicGain);
+        src.start(t);
+      }
+    }
+  }
+
+  // ========== CANVAS ==========
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  const W = canvas.width, H = canvas.height;
+
+  const ZOOM = 16;
+  let camX = 20, camY = 20;
+
+  function worldToScreen(gx, gy){ return { x:(gx-camX)*ZOOM+W/2, y:(gy-camY)*ZOOM+H/2 }; }
+  function screenToWorld(sx, sy){ return { gx:(sx-W/2)/ZOOM+camX, gy:(sy-H/2)/ZOOM+camY }; }
+
+  const namedBuildings = MAP.bd.filter(b=>LANDMARKS[b.n]).map(b=>{
+    const cx=b.p.reduce((s,p)=>s+p[0],0)/b.p.length;
+    const cy=b.p.reduce((s,p)=>s+p[1],0)/b.p.length;
+    return {...b, cx, cy, info:LANDMARKS[b.n]};
+  });
+
+  const roadPoints = [];
+  MAP.hw.forEach(h=>{
+    if(h.t==='secondary'||h.t==='tertiary'||h.t==='residential'){
+      for(let i=0;i<h.p.length-1;i++){
+        const [x1,y1]=h.p[i],[x2,y2]=h.p[i+1];
+        const steps=Math.max(1, Math.hypot(x2-x1,y2-y1)*2|0);
+        for(let s=0;s<=steps;s++){
+          const t=s/steps;
+          roadPoints.push([x1+(x2-x1)*t, y1+(y2-y1)*t]);
+        }
+      }
+    }
+  });
+
+  function pointInPoly(x,y,poly){
+    let inside=false;
+    for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+      const xi=poly[i][0], yi=poly[i][1];
+      const xj=poly[j][0], yj=poly[j][1];
+      const it=((yi>y)!==(yj>y)) && (x<(xj-xi)*(y-yi)/(yj-yi+1e-9)+xi);
+      if(it) inside=!inside;
+    }
+    return inside;
+  }
+  function isBlocked(gx,gy){
+    if(gx<0||gy<0||gx>MAP.gs||gy>MAP.gs) return true;
+    for(const b of MAP.bd){
+      let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
+      for(const [x,y] of b.p){ if(x<minx)minx=x; if(x>maxx)maxx=x; if(y<miny)miny=y; if(y>maxy)maxy=y; }
+      if(gx<minx-0.1||gx>maxx+0.1||gy<miny-0.1||gy>maxy+0.1) continue;
+      if(pointInPoly(gx,gy,b.p)) return true;
+    }
+    return false;
+  }
+
+  function findRoadNear(gx,gy){
+    let best=null,bd=1e9;
+    for(const p of roadPoints){
+      const d=Math.hypot(p[0]-gx,p[1]-gy);
+      if(d<bd){bd=d;best=p;}
+    }
+    return best||[gx,gy];
+  }
+
+  let player, son, teachers, siblings, clues;
+
+  function resetEntities(){
+    const start=findRoadNear(20,20);
+    player={
+      gx:start[0],gy:start[1],speed:0.055,mp:100,anim:0,stepTimer:0,
+      dirX:0,dirY:1,attackTimer:0,attackCooldown:0
+    };
+    const ijin=namedBuildings.find(b=>b.n==='I JIN Building');
+    const sstart=ijin?findRoadNear(ijin.cx+1,ijin.cy):[25,22];
+    son={gx:sstart[0],gy:sstart[1],speed:0.042,hidden:false,hideTimer:0,tgt:null};
+    const acadA=namedBuildings.find(b=>b.n==='삼부프라자');
+    const acadB=namedBuildings.find(b=>b.n==='건영상가');
+    teachers=[];
+    if(acadA){
+      const p1=findRoadNear(acadA.cx-2,acadA.cy);
+      const p2=findRoadNear(acadA.cx+2,acadA.cy+1);
+      teachers.push({
+        gx:p1[0],gy:p1[1],path:[p1,p2],pIdx:0,
+        patrolSpeed:0.022,state:'patrol',stunTimer:0,kbX:0,kbY:0,kbTimer:0
+      });
+    }
+    if(acadB){
+      const p1=findRoadNear(acadB.cx-1,acadB.cy-1);
+      const p2=findRoadNear(acadB.cx+1,acadB.cy+2);
+      teachers.push({
+        gx:p1[0],gy:p1[1],path:[p1,p2],pIdx:0,
+        patrolSpeed:0.02,state:'patrol',stunTimer:0,kbX:0,kbY:0,kbTimer:0
+      });
+    }
+    const shuttle=namedBuildings.find(b=>b.n==='덕암관');
+    const snack=namedBuildings.find(b=>b.n==='두타빌 B동');
+    siblings=[];
+    if(shuttle){
+      const p=findRoadNear(shuttle.cx-1,shuttle.cy-1);
+      siblings.push({gx:p[0],gy:p[1],name:'👧 여동생',spoken:false,msg:'오빠 아까 I JIN 빌딩 PC방 갔어! 근데 마라탕...'});
+    }
+    if(snack){
+      const p=findRoadNear(snack.cx+1,snack.cy);
+      siblings.push({gx:p[0],gy:p[1],name:'🧒 막내',spoken:false,msg:'형은... 서쪽? (사실 동쪽 편의점)'});
+    }
+    clues=[];
+    const spots=[[16,25],[22,22],[27,20],[17,15],[24,17]];
+    for(let i=0;i<3;i++){
+      const s=spots[i];
+      const p=findRoadNear(s[0],s[1]);
+      clues.push({gx:p[0],gy:p[1],taken:false,icon:['📝','🥤','🎒'][i],text:['뜯지 않은 영단어장','편의점 슬러시 컵','책가방 지퍼 조각'][i]});
+    }
+  }
+
+  const state={running:false,time:150,anger:0,cluesFound:0,lastKakao:0,tick:0};
+
+  // ========== INPUT ==========
+  const keys={};
+  window.addEventListener('keydown',e=>{
+    const k=e.key.toLowerCase();
+    keys[k]=true;
+    if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault();
+    if(k==='f') { e.preventDefault(); toggleFullscreen(); }
+    if(k==='m') { e.preventDefault(); toggleSound(); }
+  });
+  window.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
+  document.querySelectorAll('#mobile-pad button[data-dir]').forEach(btn=>{
+    const dir=btn.dataset.dir;
+    const map={up:'w',down:'s',left:'a',right:'d',dash:'shift',attack:' '};
+    const k=map[dir];
+    const on=e=>{e.preventDefault();keys[k]=true;};
+    const off=e=>{e.preventDefault();keys[k]=false;};
+    btn.addEventListener('touchstart',on);
+    btn.addEventListener('touchend',off);
+    btn.addEventListener('mousedown',on);
+    btn.addEventListener('mouseup',off);
+    btn.addEventListener('mouseleave',off);
+  });
+
+  // ========== FULLSCREEN & SOUND BUTTONS ==========
+  const wrap = document.getElementById('game-wrap');
+  const btnFs = document.getElementById('btn-fs');
+  const btnSound = document.getElementById('btn-sound');
+  const btnMusic = document.getElementById('btn-music');
+
+  function toggleFullscreen(){
+    SFX.click();
+    if(!document.fullscreenElement && !document.webkitFullscreenElement){
+      const req = wrap.requestFullscreen || wrap.webkitRequestFullscreen;
+      if(req){
+        req.call(wrap).catch(err=>console.warn('FS failed', err));
+      }
+    } else {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if(exit) exit.call(document);
+    }
+  }
+  btnFs.addEventListener('click', toggleFullscreen);
+
+  function toggleSound(){
+    audio.enabled = !audio.enabled;
+    btnSound.textContent = audio.enabled ? '🔊' : '🔇';
+    btnSound.classList.toggle('active', audio.enabled);
+    if(audio.enabled) SFX.click();
+  }
+  btnSound.addEventListener('click', ()=>{ initAudio(); toggleSound(); });
+
+  btnMusic.addEventListener('click', ()=>{
+    initAudio();
+    audio.musicEnabled = !audio.musicEnabled;
+    btnMusic.textContent = audio.musicEnabled ? '🎵' : '🎶';
+    btnMusic.classList.toggle('active', audio.musicEnabled);
+    SFX.click();
+  });
+
+  function onFsChange(){
+    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    btnFs.textContent = isFs ? '⛶✕' : '⛶';
+    btnFs.classList.toggle('active', isFs);
+  }
+  document.addEventListener('fullscreenchange', onFsChange);
+  document.addEventListener('webkitfullscreenchange', onFsChange);
+
+  // Building click / popup
+  const bp=document.getElementById('building-popup');
+  const bpImg=document.getElementById('bp-img');
+  const bpCap=document.getElementById('bp-cap');
+  const bpSub=document.getElementById('bp-sub');
+  canvas.addEventListener('click', e=>{
+    const rect=canvas.getBoundingClientRect();
+    const sx=(e.clientX-rect.left)*(W/rect.width);
+    const sy=(e.clientY-rect.top)*(H/rect.height);
+    const w=screenToWorld(sx,sy);
+    let found=null;
+    for(const b of namedBuildings){
+      if(pointInPoly(w.gx,w.gy,b.p)){found=b;break;}
+    }
+    if(found){
+      SFX.talk();
+      bpImg.src=REAL_IMAGES[found.info.imgIdx%REAL_IMAGES.length];
+      bpCap.textContent=found.info.emoji+' '+found.info.label;
+      bpSub.textContent=found.info.desc;
+      bp.style.display='block';
+      clearTimeout(bp._t);
+      bp._t=setTimeout(()=>{bp.style.display='none';},5000);
+    } else {
+      bp.style.display='none';
+    }
+  });
+
+  // Popups
+  const kakaoEl=document.getElementById('kakao');
+  const kakaoMsgEl=document.getElementById('kakao-msg');
+  function showKakao(msg){
+    SFX.kakao();
+    kakaoMsgEl.textContent=msg;
+    kakaoEl.classList.add('show');
+    clearTimeout(showKakao._t);
+    showKakao._t=setTimeout(()=>kakaoEl.classList.remove('show'),3500);
+  }
+  const hintEl=document.getElementById('hint');
+  function showHint(msg){
+    hintEl.textContent=msg;
+    hintEl.classList.add('show');
+    clearTimeout(showHint._t);
+    showHint._t=setTimeout(()=>hintEl.classList.remove('show'),3200);
+  }
+
+  // ========== DRAWING (same as before) ==========
+  function drawMap(){
+    ctx.fillStyle='#1a2035';
+    ctx.fillRect(0,0,W,H);
+    const hwStyles={
+      secondary:{color:'#e8b26a',width:14,outline:'#5a3a1a'},
+      tertiary:{color:'#d0985a',width:10,outline:'#4a2f14'},
+      residential:{color:'#7a7f8a',width:7,outline:'#2f333d'},
+      service:{color:'#5a6068',width:4,outline:'#2a2e35'},
+      pedestrian:{color:'#6a7080',width:4,outline:'#2a2e35'},
+      footway:{color:'#606670',width:2.5,outline:null},
+      steps:{color:'#606670',width:2.5,outline:null}
+    };
+    MAP.hw.forEach(h=>{
+      const s=hwStyles[h.t]||hwStyles.service;
+      if(!s.outline) return;
+      ctx.strokeStyle=s.outline;
+      ctx.lineWidth=(s.width+2)*ZOOM/16;
+      ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.beginPath();
+      for(let i=0;i<h.p.length;i++){
+        const p=worldToScreen(h.p[i][0],h.p[i][1]);
+        if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);
+      }
+      ctx.stroke();
+    });
+    MAP.hw.forEach(h=>{
+      const s=hwStyles[h.t]||hwStyles.service;
+      ctx.strokeStyle=s.color;
+      ctx.lineWidth=s.width*ZOOM/16;
+      ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.beginPath();
+      for(let i=0;i<h.p.length;i++){
+        const p=worldToScreen(h.p[i][0],h.p[i][1]);
+        if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);
+      }
+      ctx.stroke();
+    });
+    ctx.strokeStyle='rgba(255,220,120,0.45)';
+    ctx.lineWidth=1;
+    ctx.setLineDash([6,6]);
+    MAP.hw.forEach(h=>{
+      if(h.t!=='secondary')return;
+      ctx.beginPath();
+      for(let i=0;i<h.p.length;i++){
+        const p=worldToScreen(h.p[i][0],h.p[i][1]);
+        if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);
+      }
+      ctx.stroke();
+    });
+    ctx.setLineDash([]);
+    MAP.bd.forEach(b=>{
+      const isNamed=LANDMARKS[b.n];
+      const color=isNamed?'#c85560':'#4a4560';
+      const shadow=isNamed?'#6a2830':'#2a2534';
+      ctx.fillStyle='rgba(0,0,0,0.4)';
+      ctx.beginPath();
+      for(let i=0;i<b.p.length;i++){
+        const p=worldToScreen(b.p[i][0]+0.2,b.p[i][1]+0.2);
+        if(i===0)ctx.moveTo(p.x,p.y+6);else ctx.lineTo(p.x,p.y+6);
+      }
+      ctx.closePath();ctx.fill();
+      ctx.fillStyle=color;
+      ctx.strokeStyle=shadow;
+      ctx.lineWidth=1;
+      ctx.beginPath();
+      for(let i=0;i<b.p.length;i++){
+        const p=worldToScreen(b.p[i][0],b.p[i][1]);
+        if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);
+      }
+      ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.08)';
+      ctx.beginPath();
+      for(let i=0;i<b.p.length;i++){
+        const p=worldToScreen(b.p[i][0]-0.15,b.p[i][1]-0.15);
+        if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);
+      }
+      ctx.closePath();ctx.fill();
+    });
+    namedBuildings.forEach(b=>{
+      const p=worldToScreen(b.cx,b.cy);
+      if(p.x<-40||p.x>W+40||p.y<-30||p.y>H+30) return;
+      const label=b.info.emoji+' '+b.n;
+      ctx.font='bold 10px sans-serif';
+      const w=ctx.measureText(label).width+10;
+      ctx.fillStyle='rgba(0,0,0,0.75)';
+      ctx.fillRect(p.x-w/2,p.y-8,w,14);
+      ctx.strokeStyle='rgba(255,215,0,0.6)';
+      ctx.lineWidth=0.5;
+      ctx.strokeRect(p.x-w/2,p.y-8,w,14);
+      ctx.fillStyle='#fff';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(label,p.x,p.y);
+    });
+  }
+
+  function drawChar(gx,gy,colors,label,anim){
+    const p=worldToScreen(gx,gy);
+    const bob=Math.sin(anim)*1.2;
+    ctx.fillStyle='rgba(0,0,0,0.5)';
+    ctx.beginPath();
+    ctx.ellipse(p.x,p.y+4,8,3,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle=colors.legs;
+    ctx.fillRect(p.x-4,p.y-2+bob,3,4);
+    ctx.fillRect(p.x+1,p.y-2+bob,3,4);
+    ctx.fillStyle=colors.body;
+    ctx.fillRect(p.x-5,p.y-11+bob,10,10);
+    const armS=Math.sin(anim*1.2)*1;
+    ctx.fillRect(p.x-7,p.y-9+bob+armS,2,6);
+    ctx.fillRect(p.x+5,p.y-9+bob-armS,2,6);
+    ctx.fillStyle=colors.head;
+    ctx.fillRect(p.x-4,p.y-18+bob,8,8);
+    ctx.fillStyle=colors.hair;
+    ctx.fillRect(p.x-4,p.y-18+bob,8,3);
+    if(colors.hairSide){
+      ctx.fillRect(p.x-5,p.y-17+bob,1,4);
+      ctx.fillRect(p.x+4,p.y-17+bob,1,4);
+    }
+    ctx.fillStyle='#000';
+    ctx.fillRect(p.x-2,p.y-14+bob,1,1);
+    ctx.fillRect(p.x+1,p.y-14+bob,1,1);
+    if(label){
+      ctx.font='bold 9px sans-serif';
+      const w=ctx.measureText(label).width+8;
+      ctx.fillStyle='rgba(0,0,0,0.75)';
+      ctx.fillRect(p.x-w/2,p.y-30+bob,w,11);
+      ctx.fillStyle='#fff';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(label,p.x,p.y-24+bob);
+    }
+  }
+
+  function drawClue(c){
+    if(c.taken)return;
+    const p=worldToScreen(c.gx,c.gy);
+    const bob=Math.sin(state.tick*0.15)*3;
+    const glow=ctx.createRadialGradient(p.x,p.y+bob,0,p.x,p.y+bob,18);
+    glow.addColorStop(0,'rgba(255,220,80,0.5)');
+    glow.addColorStop(1,'rgba(255,220,80,0)');
+    ctx.fillStyle=glow;
+    ctx.fillRect(p.x-20,p.y-20+bob,40,40);
+    ctx.font='16px sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(c.icon,p.x,p.y+bob);
+  }
+
+  function drawMinimap(){
+    const mx=W-138,my=12,mw=126,mh=126;
+    ctx.fillStyle='rgba(0,0,0,0.8)';
+    ctx.fillRect(mx-3,my-3,mw+6,mh+6);
+    ctx.fillStyle='#0a0f1c';
+    ctx.fillRect(mx,my,mw,mh);
+    ctx.font='bold 9px sans-serif';
+    ctx.fillStyle='#ffcc66';
+    ctx.textAlign='left';ctx.textBaseline='top';
+    ctx.fillText('🗺️ 실제 은행사거리',mx+4,my+3);
+    const sx=mw/MAP.gs,sy=mh/MAP.gs;
+    MAP.hw.forEach(h=>{
+      const w=h.t==='secondary'?2.5:h.t==='tertiary'?1.8:1;
+      const c=h.t==='secondary'?'#e8b26a':h.t==='tertiary'?'#a8814a':'#555';
+      ctx.strokeStyle=c;ctx.lineWidth=w;
+      ctx.beginPath();
+      for(let i=0;i<h.p.length;i++){
+        const x=mx+h.p[i][0]*sx,y=my+h.p[i][1]*sy;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    });
+    MAP.bd.forEach(b=>{
+      const isNamed=LANDMARKS[b.n];
+      ctx.fillStyle=isNamed?'#c85560':'#3a3548';
+      ctx.beginPath();
+      for(let i=0;i<b.p.length;i++){
+        const x=mx+b.p[i][0]*sx,y=my+b.p[i][1]*sy;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.closePath();ctx.fill();
+    });
+    ctx.fillStyle='#ffcc44';
+    ctx.beginPath();
+    ctx.arc(mx+player.gx*sx,my+player.gy*sy,2.5,0,Math.PI*2);
+    ctx.fill();
+    if(state.cluesFound>=1&&!son.hidden){
+      ctx.fillStyle='#ff5577';
+      ctx.beginPath();
+      ctx.arc(mx+son.gx*sx,my+son.gy*sy,2.5,0,Math.PI*2);
+      ctx.fill();
+    } else if(son.hidden){
+      ctx.fillStyle='#ff5577';
+      ctx.font='bold 9px sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('?',mx+son.gx*sx,my+son.gy*sy);
+    }
+    teachers.forEach(t=>{
+      ctx.fillStyle='#88ccff';
+      ctx.beginPath();
+      ctx.arc(mx+t.gx*sx,my+t.gy*sy,1.8,0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.strokeStyle='rgba(255,255,255,0.25)';
+    ctx.lineWidth=0.5;
+    const vw=(W/ZOOM)*sx,vh=(H/ZOOM)*sy;
+    ctx.strokeRect(mx+camX*sx-vw/2,my+camY*sy-vh/2,vw,vh);
+  }
+
+  // ========== UPDATE ==========
+  function tryMove(ent,dx,dy){
+    const nx=ent.gx+dx,ny=ent.gy+dy;
+    if(!isBlocked(nx,ent.gy))ent.gx=nx;
+    if(!isBlocked(ent.gx,ny))ent.gy=ny;
+    ent.gx=Math.max(0.3,Math.min(MAP.gs-0.3,ent.gx));
+    ent.gy=Math.max(0.3,Math.min(MAP.gs-0.3,ent.gy));
+  }
+
+  function performAttack(){
+    SFX.attack();
+    player.attackTimer = 0.22;
+    player.attackCooldown = 0.45;
+
+    // 공격 방향으로 살짝 런지(전진)
+    tryMove(player, player.dirX * 0.45, player.dirY * 0.45);
+
+    const cx = player.gx + player.dirX * 0.9;
+    const cy = player.gy + player.dirY * 0.9;
+    const range = 1.9;
+
+    teachers.forEach(t => {
+      const dist = Math.hypot(t.gx - cx, t.gy - cy);
+      if (dist < range) {
+        t.stunTimer = 1.8; // 1.8초 기절
+
+        const kx = t.gx - player.gx;
+        const ky = t.gy - player.gy;
+        const klen = Math.hypot(kx, ky) || 1;
+        t.kbX = (kx / klen) * 0.22;
+        t.kbY = (ky / klen) * 0.22;
+        t.kbTimer = 0.12;
+
+        SFX.hit();
+        showHint('⚔️ 촥! 선생님을 기절시켰습니다! (1.8초간 추격 중지)');
+      }
+    });
+  }
+
+  function update(dt){
+    if(!state.running)return;
+    state.tick++;
+    state.time-=dt;
+    if(state.time<=0){endGame(false,'⏰ 학원 셔틀이 덕암관 앞을 떠나버렸다... 오늘 저녁 밥상은 얼음장.');return;}
+    state.anger=Math.min(100,((150-state.time)/150)*100);
+    if(state.anger>=100){endGame(false,'😤 와이프 분노 100%! 이번 주말은 처가행이다.');return;}
+
+    if(player.attackTimer > 0) player.attackTimer = Math.max(0, player.attackTimer - dt);
+    if(player.attackCooldown > 0) player.attackCooldown = Math.max(0, player.attackCooldown - dt);
+
+    let dx=0,dy=0;
+    if(keys['w']||keys['arrowup'])dy-=1;
+    if(keys['s']||keys['arrowdown'])dy+=1;
+    if(keys['a']||keys['arrowleft'])dx-=1;
+    if(keys['d']||keys['arrowright'])dx+=1;
+
+    if(player.attackTimer <= 0 && (dx || dy)){
+      const len = Math.hypot(dx, dy);
+      player.dirX = dx / len;
+      player.dirY = dy / len;
+    }
+
+    if(keys[' '] && player.attackTimer <= 0 && player.attackCooldown <= 0){
+      performAttack();
+    }
+
+    const dashing=keys['shift']&&player.mp>0 && player.attackTimer <= 0;
+    const spd=player.speed*(dashing?1.9:1);
+    if(dashing)player.mp=Math.max(0,player.mp-0.15);
+    else player.mp=Math.min(100,player.mp+0.04);
+
+    let moving = false;
+    if(player.attackTimer <= 0 && (dx||dy)){
+      moving = true;
+      const len=Math.hypot(dx,dy);
+      tryMove(player,(dx/len)*spd,(dy/len)*spd);
+      player.anim+=0.3*(dashing?1.5:1);
+      // Footstep sound
+      player.stepTimer += dt * (dashing ? 1.8 : 1);
+      if(player.stepTimer > 0.28){
+        player.stepTimer = 0;
+        SFX.step();
+      }
+      // Dash sound trigger
+      if(dashing && !player._wasDashing){
+        SFX.dash();
+      }
+      player._wasDashing = dashing;
+    } else {
+      player._wasDashing = false;
+      player.stepTimer = 0.25;
+    }
+
+    camX+=(player.gx-camX)*0.08;
+    camY+=(player.gy-camY)*0.08;
+
+    const distSon=Math.hypot(player.gx-son.gx,player.gy-son.gy);
+    if(son.hidden){
+      son.hideTimer-=dt;
+      if(son.hideTimer<=0)son.hidden=false;
+    } else if(distSon<5){
+      const fx=son.gx-player.gx,fy=son.gy-player.gy;
+      const fl=Math.hypot(fx,fy)||1;
+      tryMove(son,(fx/fl)*son.speed*1.35,(fy/fl)*son.speed*1.35);
+    } else {
+      if(!son.tgt||Math.hypot(son.tgt[0]-son.gx,son.tgt[1]-son.gy)<0.6){
+        son.tgt=roadPoints[Math.floor(Math.random()*roadPoints.length)];
+        if(Math.random()<0.2){
+          son.hidden=true;
+          son.hideTimer=2.5;
+          const lm=namedBuildings[Math.floor(Math.random()*namedBuildings.length)];
+          const r=findRoadNear(lm.cx+0.5,lm.cy+0.5);
+          son.gx=r[0];son.gy=r[1];
+        }
+      }
+      const tx=son.tgt[0]-son.gx,ty=son.tgt[1]-son.gy;
+      const tl=Math.hypot(tx,ty)||1;
+      tryMove(son,(tx/tl)*son.speed*0.6,(ty/tl)*son.speed*0.6);
+    }
+
+    if(!son.hidden&&distSon<0.7){
+      endGame(true,'🎉 잡았다! 아들이 아빠 손에 잡혀 터덜터덜 학원으로... 오늘 아빠는 영웅이다.');
+      return;
+    }
+
+    teachers.forEach(t=>{
+      if(t.kbTimer > 0){
+        t.kbTimer -= dt;
+        tryMove(t, t.kbX, t.kbY);
+      }
+      else if(t.stunTimer > 0){
+        t.stunTimer -= dt;
+      }
+      else {
+        const distToPlayer = Math.hypot(player.gx - t.gx, player.gy - t.gy);
+        if(distToPlayer < 7.0){
+          t.state = 'chase';
+        } else if(distToPlayer > 10.0){
+          t.state = 'patrol';
+        }
+
+        if(t.state === 'chase'){
+          const chaseSpeed = t.patrolSpeed * 1.35;
+          const angle = Math.atan2(player.gy - t.gy, player.gx - t.gx);
+          let moved = false;
+          for (let offset = 0; offset <= 2 * Math.PI / 3; offset += Math.PI / 12) {
+            for (let sign of [1, -1]) {
+              const trialAngle = angle + sign * offset;
+              const tdx = Math.cos(trialAngle) * chaseSpeed;
+              const tdy = Math.sin(trialAngle) * chaseSpeed;
+              if (!isBlocked(t.gx + tdx, t.gy + tdy)) {
+                tryMove(t, tdx, tdy);
+                moved = true;
+                break;
+              }
+            }
+            if (moved) break;
+          }
+        } else {
+          const tar=t.path[t.pIdx];
+          const tx=tar[0]-t.gx,ty=tar[1]-t.gy;
+          const tl=Math.hypot(tx,ty);
+          if(tl<0.3)t.pIdx=(t.pIdx+1)%t.path.length;
+          else tryMove(t,(tx/tl)*t.patrolSpeed,(ty/tl)*t.patrolSpeed);
+        }
+      }
+
+      const d=Math.hypot(player.gx-t.gx,player.gy-t.gy);
+      if(d<0.85&&!t._hit&&t.stunTimer<=0){
+        t._hit=true;
+        player.mp=Math.max(0,player.mp-30);
+        state.anger=Math.min(100,state.anger+6);
+        SFX.teacher();
+        showHint('📚 학원 선생님: "아버님, 준서 이번주 결석이 3번..." (멘탈 -30)');
+        setTimeout(()=>{t._hit=false;},2500);
+      }
+    });
+
+    clues.forEach(c=>{
+      if(c.taken)return;
+      if(Math.hypot(player.gx-c.gx,player.gy-c.gy)<0.7){
+        c.taken=true;
+        state.cluesFound++;
+        SFX.clue();
+        showHint(`🔍 단서 획득: ${c.text} — 미니맵에 아들 위치 표시!`);
+        showKakao(`단서 ${state.cluesFound}/3! 그래도 잘 하네~`);
+      }
+    });
+
+    siblings.forEach(s=>{
+      if(s.spoken)return;
+      if(Math.hypot(player.gx-s.gx,player.gy-s.gy)<0.9){
+        s.spoken=true;
+        SFX.talk();
+        showHint(`${s.name}: "${s.msg}"`);
+      }
+    });
+
+    const t=Math.floor(state.time);
+    if(t!==state.lastKakao&&t%25===0){
+      state.lastKakao=t;
+      const msgs=['아직도 못 잡았어?','선생님한테 또 전화 옴;;','진짜 오늘 각오해','어디쯤이야?? 셔틀 5분 남음','내가 진짜 못 살아'];
+      showKakao(msgs[Math.floor(Math.random()*msgs.length)]);
+    }
+
+    // Update music
+    updateMusic(dt);
+  }
+
+  function render(){
+    drawMap();
+    const list=[];
+    clues.forEach(c=>{if(!c.taken)list.push({gy:c.gy-0.1,kind:'clue',ref:c});});
+    siblings.forEach(s=>{if(!s.spoken)list.push({gy:s.gy,kind:'sib',ref:s});});
+    teachers.forEach(t=>list.push({gy:t.gy,kind:'teacher',ref:t}));
+    if(!son.hidden)list.push({gy:son.gy,kind:'son'});
+    list.push({gy:player.gy,kind:'player'});
+    list.sort((a,b)=>a.gy-b.gy);
+    list.forEach(it=>{
+      if(it.kind==='clue')drawClue(it.ref);
+      else if(it.kind==='sib'){
+        const isGirl=it.ref.name.includes('여');
+        drawChar(it.ref.gx,it.ref.gy,
+          isGirl?{body:'#ffb0c8',head:'#f0d0a0',hair:'#402010',legs:'#8a4a6a',hairSide:true}:{body:'#70b0e8',head:'#f0d0a0',hair:'#1a0a05',legs:'#3a3a3a'},
+          it.ref.name,0);
+      }
+      else if(it.kind==='teacher'){
+        drawChar(it.ref.gx,it.ref.gy,{body:'#2a2a2a',head:'#e8c090',hair:'#1a1a1a',legs:'#1a1a1a'},'📚 선생',state.tick*0.2);
+        const p=worldToScreen(it.ref.gx,it.ref.gy);
+        if(it.ref.stunTimer > 0){
+          ctx.font='12px sans-serif';
+          ctx.textAlign='center';
+          const stunBob=Math.sin(state.tick*0.3)*2;
+          ctx.fillText('💫', p.x, p.y-34+stunBob);
+        } else if(it.ref.state === 'chase'){
+          ctx.font='bold 12px sans-serif';
+          ctx.fillStyle='#ff3333';
+          ctx.textAlign='center';
+          const alertBob=Math.sin(state.tick*0.4)*2;
+          ctx.fillText('💢', p.x, p.y-34+alertBob);
+        }
+      }
+      else if(it.kind==='son')drawChar(son.gx,son.gy,{body:'#c85560',head:'#f0d0a0',hair:'#1a0a05',legs:'#2a2a2a'},'🏃 아들',state.tick*0.35);
+      else if(it.kind==='player'){
+        drawChar(player.gx,player.gy,{body:'#3a5f8a',head:'#e8c090',hair:'#2a1a10',legs:'#1a2a4a'},'👨 아빠',player.anim);
+        if(player.attackTimer > 0){
+          const p=worldToScreen(player.gx,player.gy);
+          const angle=Math.atan2(player.dirY, player.dirX);
+          ctx.save();
+          ctx.beginPath();
+          const progress=(0.22 - player.attackTimer)/0.22;
+          const startAngle=angle - Math.PI/2 + progress * Math.PI * 0.2;
+          const endAngle=angle + Math.PI/2 - (1-progress) * Math.PI * 0.2;
+          const radius=1.9 * ZOOM;
+          ctx.arc(p.x, p.y-4, radius, startAngle, endAngle);
+          ctx.strokeStyle='rgba(180, 230, 255, 0.8)';
+          ctx.lineWidth=4;
+          ctx.shadowBlur=10;
+          ctx.shadowColor='#88ccff';
+          ctx.stroke();
+          ctx.fillStyle='rgba(100, 200, 255, 0.15)';
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+    });
+    drawMinimap();
+    document.getElementById('time-val').textContent=formatTime(state.time);
+    const tb=document.getElementById('time-bar');
+    tb.style.width=Math.max(0,state.time/150*100)+'%';
+    tb.style.background=state.time<30?'var(--color-error)':state.time<70?'var(--color-warning)':'var(--color-success)';
+    document.getElementById('anger-val').textContent=Math.floor(state.anger)+'%';
+    document.getElementById('anger-bar').style.width=state.anger+'%';
+    document.getElementById('mp-val').textContent=Math.floor(player.mp);
+    document.getElementById('mp-bar').style.width=player.mp+'%';
+  }
+
+  function formatTime(s){s=Math.max(0,s);const m=Math.floor(s/60),sec=Math.floor(s%60);return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;}
+
+  let lastT=performance.now();
+  function loop(now){
+    const dt=Math.min(0.05,(now-lastT)/1000);
+    lastT=now;
+    if(player){update(dt);render();}
+    requestAnimationFrame(loop);
+  }
+  resetEntities();
+  requestAnimationFrame(loop);
+
+  window.startGame=function(){
+    initAudio();
+    if(audio.ctx && audio.ctx.state==='suspended') audio.ctx.resume();
+    SFX.start();
+    resetEntities();
+    state.running=true;
+    state.time=150;state.anger=0;state.cluesFound=0;state.tick=0;state.lastKakao=0;
+    melodyStep=0; bassStep=0; musicTimer=0;
+    camX=player.gx;camY=player.gy;
+    document.getElementById('overlay').style.display='none';
+    setTimeout(()=>showKakao('학원에서 전화 왔어! 준서 오늘도 째고 나감!! 2분 30초 안에 잡아와!!!'), 400);
+    setTimeout(()=>showHint('💡 팁: 반짝이는 단서(📝🥤🎒) 3개 주우면 아들 위치 표시! 랜드마크 클릭 = 실사 사진.'),1500);
+  };
+
+  function endGame(win,msg){
+    state.running=false;
+    if(win) SFX.catch(); else SFX.gameover();
+    const ov=document.getElementById('overlay');
+    ov.innerHTML=`<div class="box">
+      <h2>${win?'🏆 미션 클리어!':'💀 게임 오버'}</h2>
+      <p>${msg}</p>
+      <p style="opacity:.7;font-size:12px;">단서: ${state.cluesFound}/3 · 멘탈: ${Math.floor(player.mp)} · 남은시간: ${formatTime(state.time)}</p>
+      <button class="primary" onclick="startGame()">${win?'한 번 더!':'다시 도전'}</button>
+      <div class="attr">Map data © OpenStreetMap contributors (ODbL) · Sounds: Web Audio API synthesis</div>
+    </div>`;
+    ov.style.display='flex';
+  }
+})();
+</script>
+</div></body>
+</html>
