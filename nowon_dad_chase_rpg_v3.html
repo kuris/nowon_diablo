@@ -309,6 +309,68 @@ window.addEventListener('message', function(ev) {
   #building-popup img { width:100%; height:88px; object-fit:cover; border-radius:4px; display:block; }
   #building-popup .cap { font-size:11px; margin-top:6px; color:#fff; font-weight:600; }
   #building-popup .sub { font-size:10px; color:rgba(255,255,255,0.65); margin-top:2px; }
+
+  /* ── 아들 방향 화살표 인디케이터 ── */
+  #son-arrow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 8;
+    display: none;
+  }
+  #son-arrow .arrow-wrap {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    transform-origin: center center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    filter: drop-shadow(0 0 10px rgba(255,220,0,0.9));
+    animation: arrow-pulse 0.65s ease-in-out infinite alternate;
+  }
+  #son-arrow .arrow-head {
+    width: 0;
+    height: 0;
+    border-left: 22px solid transparent;
+    border-right: 22px solid transparent;
+    border-bottom: 36px solid #ffe500;
+  }
+  #son-arrow .arrow-body {
+    width: 14px;
+    height: 28px;
+    background: #ffe500;
+    border-radius: 0 0 4px 4px;
+  }
+  #son-arrow .arrow-label {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffe500;
+    background: rgba(0,0,0,0.7);
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.3px;
+  }
+  @keyframes arrow-pulse {
+    from { transform: scale(1.0) rotate(var(--arrow-rot, 0deg)); }
+    to   { transform: scale(1.15) rotate(var(--arrow-rot, 0deg)); }
+  }
+  /* 깜빡 등장 애니메이션 */
+  @keyframes arrow-appear {
+    0%   { opacity:0; transform: scale(0.4) rotate(var(--arrow-rot,0deg)); }
+    60%  { opacity:1; transform: scale(1.2) rotate(var(--arrow-rot,0deg)); }
+    100% { opacity:1; transform: scale(1.0) rotate(var(--arrow-rot,0deg)); }
+  }
+  #son-arrow.flash .arrow-wrap {
+    animation: arrow-appear 0.5s ease-out forwards,
+               arrow-pulse 0.65s 0.5s ease-in-out infinite alternate;
+  }
   #fs-controls { position:absolute; top:12px; left:12px; z-index:7; display:flex; gap:6px; }
   #controls { display:flex; gap:8px; padding:12px; background:var(--color-bg-surface); border:1px solid var(--color-border-subtle); border-top:none; border-radius:0 0 8px 8px; flex-wrap:wrap; justify-content:space-between; align-items:center; }
   #controls .info { font-size:12px; color:var(--color-text-secondary); flex:1; min-width:200px; }
@@ -350,6 +412,14 @@ window.addEventListener('message', function(ev) {
   <div id="kakao"><div class="name">👩 와이프</div><span id="kakao-msg"></span></div>
   <div id="hint"></div>
   <div id="building-popup"><img id="bp-img" src=""><div class="cap" id="bp-cap"></div><div class="sub" id="bp-sub"></div></div>
+  <!-- 아들 방향 화살표 인디케이터 -->
+  <div id="son-arrow">
+    <div class="arrow-wrap" id="arrow-wrap">
+      <div class="arrow-head"></div>
+      <div class="arrow-body"></div>
+      <div class="arrow-label" id="arrow-label">준서 방향 ▸</div>
+    </div>
+  </div>
   <div id="overlay">
     <div class="box">
       <h2>🗺️ 노원 은행사거리 3D 탐색</h2>
@@ -1071,6 +1141,14 @@ window.addEventListener('message', function(ev) {
         ];
         showHint(`🔍 흔적: ${c.text} — ${clueFollowup[state.cluesFound-1]}`);
         showKakao(`아들의 흔적 발견! (${state.cluesFound}/3)`);
+        // 화살표 플래시 등장 효과
+        const arrowEl = document.getElementById('son-arrow');
+        if(arrowEl){
+          arrowEl.style.display = 'block';
+          arrowEl.classList.remove('flash');
+          void arrowEl.offsetWidth; // reflow로 애니메이션 리셋
+          arrowEl.classList.add('flash');
+        }
       }
     });
 
@@ -1848,6 +1926,52 @@ window.addEventListener('message', function(ev) {
 
   function sync3D(dt){
     if(!scene) return;
+
+    // ── 아들 방향 화살표 업데이트 ──
+    (function updateSonArrow(){
+      const arrowEl = document.getElementById('son-arrow');
+      const wrapEl  = document.getElementById('arrow-wrap');
+      const labelEl = document.getElementById('arrow-label');
+      if(!arrowEl || !wrapEl || son.hidden || state.cluesFound < 1) {
+        if(arrowEl) arrowEl.style.display = 'none';
+        return;
+      }
+      arrowEl.style.display = 'block';
+
+      // 월드 좌표 → 화면 방향 각도 계산
+      const dx = son.gx - player.gx;
+      const dy = son.gy - player.gy;
+      // 쿼터뷰 카메라는 Y축이 +z(아래) 방향이므로 atan2 그대로 사용
+      const angleRad = Math.atan2(dy, dx);
+      const angleDeg = angleRad * 180 / Math.PI + 90; // 화살표 기본 방향(위)에 맞춰 +90
+
+      // 화살표를 화면 중앙 기준 가장자리에 배치 (64px 안쪽)
+      const holder = document.getElementById('canvas-holder');
+      const W = holder.clientWidth;
+      const H = holder.clientHeight;
+      const margin = 80;
+      const cx = W / 2, cy = H / 2;
+
+      // 가장자리 교차점 계산
+      const cos = Math.cos(angleRad), sin = Math.sin(angleRad);
+      const scaleX = cos !== 0 ? (W/2 - margin) / Math.abs(cos) : Infinity;
+      const scaleY = sin !== 0 ? (H/2 - margin) / Math.abs(sin) : Infinity;
+      const scale  = Math.min(scaleX, scaleY);
+      const ex = cx + cos * scale;
+      const ey = cy + sin * scale;
+
+      wrapEl.style.left = (ex - 36) + 'px';
+      wrapEl.style.top  = (ey - 36) + 'px';
+      wrapEl.style.setProperty('--arrow-rot', angleDeg + 'deg');
+      // 개별 transform으로 회전 (pulse 애니메이션이 CSS var로 못 동작하는 브라우저 대비)
+      wrapEl.style.transform = `rotate(${angleDeg}deg)`;
+
+      // 거리 표시
+      const dist = Math.hypot(dx, dy).toFixed(1);
+      const distLabel = state.cluesFound >= 3 ? `🎯 ${dist}m — 지금 잡아!` : `준서 방향 · ${dist}m`;
+      labelEl.textContent = distLabel;
+      labelEl.style.transform = `translateX(-50%) rotate(${-angleDeg}deg)`; // 라벨은 항상 수평
+    })();
 
     if(!tMeshes.player){
       // 아빠: 화사한 파란 멜빵바지 및 갈색 머리 파스텔 리뉴얼
