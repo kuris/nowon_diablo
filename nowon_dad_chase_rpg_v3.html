@@ -1227,8 +1227,8 @@ window.addEventListener('message', function(ev) {
   }
 
   function cycleCameraMode() {
-    state.cameraMode = (state.cameraMode + 1) % 3;
-    const modeNames = ['쿼터뷰 (기본)', '3인칭 백뷰', '탑다운 뷰'];
+    state.cameraMode = (state.cameraMode + 1) % 4;
+    const modeNames = ['쿼터뷰 (기본)', '3인칭 백뷰', '1인칭 로드뷰', '탑다운 뷰'];
     showHint(`🎥 시점 변경: ${modeNames[state.cameraMode]}`);
     if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
     saveGame();
@@ -1704,7 +1704,7 @@ window.addEventListener('message', function(ev) {
 
     let dx=0,dy=0;
     const camMode = state.cameraMode || 0;
-    if (camMode === 1 && typeof THREE !== 'undefined' && camera) {
+    if ((camMode === 1 || camMode === 2) && typeof THREE !== 'undefined' && camera) {
       // Calculate camera-relative movement vectors projected on ground (X-Z in Three, X-Y in game)
       const forward = new THREE.Vector3();
       camera.getWorldDirection(forward);
@@ -2930,6 +2930,7 @@ window.addEventListener('message', function(ev) {
     }
     const pm = tMeshes.player;
     pm.position.set(player.gx - 20, player.gz, player.gy - 20);
+    pm.visible = (camMode !== 2);
     
     if (pm.userData.flames) {
       const isFlying = keys['z'] && player.gz > 0.05;
@@ -3166,7 +3167,18 @@ window.addEventListener('message', function(ev) {
       camTargetX = targetCamX + dirX * 2.0;
       camTargetY = player.gz + 0.7;
       camTargetZ = targetCamZ + dirY * 2.0;
-    } else if (camMode === 2) { // 탑다운 뷰 (Birds-eye)
+    } else if (camMode === 2) { // 1인칭 로드뷰 (FPV)
+      const dirX = player.dirX || 0;
+      const dirY = player.dirY || -1;
+      
+      desiredCamX = targetCamX;
+      desiredCamY = player.gz + 1.5; // Naver Roadview camera height (eye-level)
+      desiredCamZ = targetCamZ;
+      
+      camTargetX = targetCamX + dirX * 3.0;
+      camTargetY = player.gz + 1.5;
+      camTargetZ = targetCamZ + dirY * 3.0;
+    } else if (camMode === 3) { // 탑다운 뷰 (Birds-eye)
       desiredCamX = targetCamX;
       desiredCamY = player.gz + 16.0;
       desiredCamZ = targetCamZ + 0.001;
@@ -3183,13 +3195,20 @@ window.addEventListener('message', function(ev) {
       camTargetY = player.gz;
       camTargetZ = targetCamZ - 0.5;
     }
+
+    // Dynamically adjust FOV (Wide angle 75 deg for FPV to match Naver Roadview proportion, 40 deg for others)
+    const targetFov = (camMode === 2) ? 75 : 40;
+    if (Math.abs(camera.fov - targetFov) > 0.1) {
+      camera.fov += (targetFov - camera.fov) * 0.1;
+      camera.updateProjectionMatrix();
+    }
     
-    const lerpFactor = (camMode === 1) ? 0.22 : 0.08;
+    const lerpFactor = (camMode === 2) ? 1.0 : ((camMode === 1) ? 0.22 : 0.08);
     camera.position.x += (desiredCamX - camera.position.x) * lerpFactor;
     camera.position.y += (desiredCamY - camera.position.y) * lerpFactor;
     camera.position.z += (desiredCamZ - camera.position.z) * lerpFactor;
 
-    const targetLerpFactor = (camMode === 1) ? 0.28 : 0.1;
+    const targetLerpFactor = (camMode === 2) ? 0.35 : ((camMode === 1) ? 0.28 : 0.1);
     if (!camera.currentTarget) {
       camera.currentTarget = new THREE.Vector3(camTargetX, camTargetY, camTargetZ);
     } else {
