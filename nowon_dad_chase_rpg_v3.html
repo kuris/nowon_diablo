@@ -3208,7 +3208,7 @@ window.addEventListener('message', function(ev) {
     camera.position.y += (desiredCamY - camera.position.y) * lerpFactor;
     camera.position.z += (desiredCamZ - camera.position.z) * lerpFactor;
 
-    const targetLerpFactor = (camMode === 2) ? 0.35 : ((camMode === 1) ? 0.28 : 0.1);
+    const targetLerpFactor = (camMode === 2) ? 0.06 : ((camMode === 1) ? 0.28 : 0.1);
     if (!camera.currentTarget) {
       camera.currentTarget = new THREE.Vector3(camTargetX, camTargetY, camTargetZ);
     } else {
